@@ -6,4 +6,4 @@
 
 [Sprintplanung anhand der Anforderungsdefinition](https://hb.itslearning.com/ContentArea/ContentArea.aspx?LocationID=100302&LocationType=1)
 
-Lucas, Evo, Josepha
+Lucas, Evo, Josepha!
