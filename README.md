@@ -5,3 +5,5 @@
 [Ausgangsituation](https://hb.itslearning.com/ContentArea/ContentArea.aspx?LocationID=100302&LocationType=1)
 
 [Sprintplanung anhand der Anforderungsdefinition](https://hb.itslearning.com/ContentArea/ContentArea.aspx?LocationID=100302&LocationType=1)
+
+![Projektmanagement](Projectmanagement.jpg)
