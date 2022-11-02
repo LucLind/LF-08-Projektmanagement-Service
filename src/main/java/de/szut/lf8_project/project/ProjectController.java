@@ -26,12 +26,31 @@ public class ProjectController {
         this.projectMapper = projectMapper;
         this.employeeService = employeeService;
     }
+
+    /**
+     * Post Endpunkt für Projekte anlegen
+     * @param dto
+     * @return
+     */
     @PostMapping
     public ResponseEntity<GetProjectDto> createProject(@RequestBody @Valid AddProjectDto dto){
+        // Existierende Mitarbeiter aus dem Mitarbeiter Service laden.
         EmployeeEntity mainEmployee = employeeService.readById(dto.getMainEmployeeId());
         Set<EmployeeEntity> employees = employeeService.readById(dto.getEmployees());
+
+        // Not Found Response zurückgeben wenn, Mitarbeiter nicht gefunden wurden.
+        // TODO: Was ist wenn nicht alle Mitarbeiter in der Liste gefunden wurden?
+        if (mainEmployee == null || employees.isEmpty()){
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        // Projekt Entity erzeugt
         ProjectEntity entity = projectMapper.MapAddProjectDtoToProject(dto, mainEmployee, employees);
+
+        // Projekt Entity auf der Datenbank speichern.
         entity = service.create(entity);
+
+        // Response erzeugt und zurückgegeben.
         GetProjectDto response = projectMapper.MapProjectToGetProjectDto(entity);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }

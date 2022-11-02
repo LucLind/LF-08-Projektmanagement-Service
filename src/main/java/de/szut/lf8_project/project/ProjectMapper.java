@@ -11,15 +11,30 @@ import java.util.stream.Collectors;
 @Service
 public class ProjectMapper {
 
+
+    /**
+     * Erzeugt leere Entity und weist daten zu.
+     * @param dto
+     * @param mainEmployee
+     * @param employees
+     * @return
+     */
         public ProjectEntity MapAddProjectDtoToProject(AddProjectDto dto, EmployeeEntity mainEmployee, Set<EmployeeEntity> employees){
+            // Leere Entity erzeugen
             ProjectEntity entity = new ProjectEntity();
+
+            // Daten aus dto zuweisen.
             entity.setDescription(dto.getDescription());
             entity.setComment(dto.getComment());
             entity.setStartDate(dto.getStartDate());
             entity.setEstimatedEndDate(dto.getEstimatedEndDate());
             entity.setFinalEndDate(dto.getFinalEndDate());
+
+            // Mitarbeiter zuweisen
             entity.setMainEmployee(mainEmployee);
             entity.setEmployees(employees);
+
+            // gefüllte entity zurückgeben
             return entity;
         }
         public GetProjectDto MapProjectToGetProjectDto(ProjectEntity entity){
