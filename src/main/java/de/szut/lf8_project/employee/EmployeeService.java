@@ -3,6 +3,7 @@ package de.szut.lf8_project.employee;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class EmployeeService {
@@ -17,4 +18,12 @@ public class EmployeeService {
         return null;
     }
 
+    public EmployeeEntity readById(Long mainEmployeeId) {
+        // TODO
+        return null;
+    }
+    public Set<EmployeeEntity> readById(Set<Long> mainEmployeeId) {
+        // TODO
+        return null;
+    }
 }
