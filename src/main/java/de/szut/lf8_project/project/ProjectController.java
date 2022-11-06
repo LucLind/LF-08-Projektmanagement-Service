@@ -65,8 +65,16 @@ public class ProjectController {
                 .map(projectMapper::MapProjectToGetProjectDto)   // map each project to a GetProjectDTO
                 .collect(Collectors.toList());   // collect the results in a list
     }
-
-
+    /**
+     * Get Endpunkt für ein Projekt
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public GetProjectDto readById(@PathVariable Long id){
+        ProjectEntity entity = this.service.readById(id);
+        return projectMapper.MapProjectToGetProjectDto(entity);
+    }
 
 
 
