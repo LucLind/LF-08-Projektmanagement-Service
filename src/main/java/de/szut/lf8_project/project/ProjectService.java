@@ -33,8 +33,8 @@ public class ProjectService {
     }
 
     public List<ProjectEntity> readByEmployeeId(Long employeeId){
-        // TODO
-        return null;
+        return this.repository.findByEmployeesId(employeeId);
+
     }
 
     public ProjectEntity update(ProjectEntity entity){

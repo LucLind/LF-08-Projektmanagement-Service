@@ -76,6 +76,19 @@ public class ProjectController {
         return projectMapper.MapProjectToGetProjectDto(entity);
     }
 
+    /**
+     * Get Endpunkt für alle Projekte eines Mitarbeiters
+     * @param employeeId
+     * @return
+     */
+    @GetMapping("/{employeeId}")
+    public List<GetProjectDto> readByEmployeeId(@PathVariable Long employeeId){
+        return this.service
+                .readByEmployeeId(employeeId)
+                .stream()
+                .map(projectMapper::MapProjectToGetProjectDto)
+                .collect(Collectors.toList());
+    }
 
 
 }
