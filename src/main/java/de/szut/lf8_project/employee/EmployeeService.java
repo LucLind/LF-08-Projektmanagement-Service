@@ -1,6 +1,7 @@
 package de.szut.lf8_project.employee;
 
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
+import de.szut.lf8_project.project.ProjectEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -22,9 +23,9 @@ public class EmployeeService {
     }
 
     /**
-     * Liest aus aud der datenbank und valdiert mit mitarbeiter dienst
-     * @param mainEmployeeId
-     * @return
+     * Liest aus aud der Datenbank und valdiert mit Mitarbeiter dienst
+     * @param mainEmployeeId Die ID des Hauptverantwortlichen Mitarbeiters
+     * @return Mitarbeiter mit gewählter ID
      */
     public EmployeeEntity readById(Long mainEmployeeId) {
         Optional<EmployeeEntity> opt = this.repository.findById(mainEmployeeId);
@@ -33,7 +34,13 @@ public class EmployeeService {
         }
         return opt.get();
     }
-    public Set<EmployeeEntity> readById(Set<Long> mainEmployeeId) {
+
+    /**
+     * Liest aus aud der Datenbank und valdiert mit Mitarbeiter dienst
+     * @param employeeIds Die IDs der Mitarbeiter
+     * @return Mitarbeiter mit gewählten IDs
+     */
+    public Set<EmployeeEntity> readById(Set<Long> employeeIds) {
         // TODO
         return new HashSet<EmployeeEntity>();
     }

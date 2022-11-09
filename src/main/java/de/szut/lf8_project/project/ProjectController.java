@@ -2,6 +2,7 @@ package de.szut.lf8_project.project;
 
 import de.szut.lf8_project.employee.EmployeeEntity;
 import de.szut.lf8_project.employee.EmployeeService;
+import de.szut.lf8_project.employee.dto.GetEmployeeDto;
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
 import de.szut.lf8_project.project.dto.AddProjectDto;
 import de.szut.lf8_project.project.dto.GetProjectDto;
@@ -145,9 +146,38 @@ public class ProjectController {
     public void deleteProjectById(@PathVariable long id) {
         var entity = this.service.readById(id);
         if (entity == null) {
-            throw new ResourceNotFoundException("HelloEntity not found on id = " + id);
+            throw new ResourceNotFoundException("Projekt mit nachfolgender ID nicht gefunden = " + id);
         } else {
             this.service.delete(entity);
+        }
+    }
+
+    @Operation(summary = "Löscht einen Mitarbeiter anhand seiner ID aus einem Projekt")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Erfolgreich gelöscht"),
+            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
+                    content = @Content)})
+    @DeleteMapping("/{employeeId}")
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void deleteEmployeeFromProjectById(@PathVariable long id, long employeeId) {
+        var entity = this.service.readById(id);
+        if (entity == null) {
+            throw new ResourceNotFoundException("Projekt mit nachfolgender ID nicht gefunden = " + id);
+        } else {
+            Set<EmployeeEntity> employees = entity.getEmployees();
+            EmployeeEntity toBeFound = null;
+            for (EmployeeEntity ent: employees) {
+                if (ent.getId() == employeeId){
+                    toBeFound = ent;
+                    break;
+                }
+            }
+            if (toBeFound == null){
+                throw new ResourceNotFoundException("Mitarbeiter mit nachfolgender ID nicht gefunden = " + employeeId);
+            }
+            employees.remove(toBeFound);
         }
     }
 }
