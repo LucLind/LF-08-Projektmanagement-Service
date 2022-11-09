@@ -2,11 +2,19 @@ package de.szut.lf8_project.project;
 
 import de.szut.lf8_project.employee.EmployeeEntity;
 import de.szut.lf8_project.employee.EmployeeService;
+<<<<<<< HEAD
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
+=======
+import de.szut.lf8_project.hello.dto.HelloGetDto;
+>>>>>>> 74becc48c1f490c30883874a86844c951efed003
 import de.szut.lf8_project.project.dto.AddProjectDto;
 import de.szut.lf8_project.project.dto.GetProjectDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+<<<<<<< HEAD
+=======
+import io.swagger.v3.oas.annotations.media.Schema;
+>>>>>>> 74becc48c1f490c30883874a86844c951efed003
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
@@ -36,6 +44,15 @@ public class ProjectController {
      * @param dto
      * @return
      */
+    @Operation(summary = "erstellt ein neues Projekt mit Mitarbeiter")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Projekt erstellt",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = HelloGetDto.class))}),
+            @ApiResponse(responseCode = "400", description = "ungültiges JSON gepostet",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "keine Berechtigung",
+                    content = @Content)})
     @PostMapping
     public ResponseEntity<GetProjectDto> createProject(@RequestBody @Valid AddProjectDto dto){
         // Existierende Mitarbeiter aus dem Mitarbeiter Service laden.
@@ -62,6 +79,13 @@ public class ProjectController {
      * Get Endpunkt für alle Projekte
      * @return
      */
+    @Operation(summary = "gibt eine Liste von Projekten wieder")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Liste aller Projekte",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = HelloGetDto.class))}),
+            @ApiResponse(responseCode = "401", description = "keine Berechtigung",
+                    content = @Content)})
     @GetMapping
     public List<GetProjectDto> findAll(){
         return this.service
@@ -75,6 +99,15 @@ public class ProjectController {
      * @param id
      * @return
      */
+    @Operation(summary = "finde Projekt anhand ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Projekt gefunden",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = HelloGetDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Projekt anhand der ID nicht gefunden",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "keine Berechtigung",
+                    content = @Content)})
     @GetMapping("/{id}")
     public GetProjectDto readById(@PathVariable Long id){
         ProjectEntity entity = this.service.readById(id);
@@ -86,6 +119,15 @@ public class ProjectController {
      * @param employeeId
      * @return
      */
+    @Operation(summary = "finde alle Projekte eines Mitarbeiters")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Projekte des Mitarbeiters gefunden",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = HelloGetDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Projekte anhand der Mitarbeiter-ID nicht gefunden",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "keine Berechtigung",
+                    content = @Content)})
     @GetMapping("/{employeeId}")
     public ResponseEntity<List<GetProjectDto>> readByEmployeeId(@PathVariable Long employeeId) {
         List<GetProjectDto> response = this.service
