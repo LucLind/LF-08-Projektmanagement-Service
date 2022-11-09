@@ -1,5 +1,6 @@
 package de.szut.lf8_project.employee.dto;
 
+import de.szut.lf8_project.qualification.QualificationEntity;
 import lombok.Data;
 
 import java.util.Set;
@@ -15,4 +16,9 @@ public class GetEmployeeDto
     private String city;
     private String phone;
     private Set<String> skillSet;
+
+    public GetEmployeeDto(Long id) {
+        this.id = id;
+    }
 }
+

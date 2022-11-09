@@ -27,4 +27,9 @@ public class EmployeeMapper {
     public EmployeesForAQualificationDto mapToGetDto(EmployeeEntity entity) {
         return new EmployeesForAQualificationDto(entity.getId(), entity.getSkillSet());
     }
+    public GetEmployeeDto mapToGetEmployeeDto(EmployeeEntity entity) {
+        return new GetEmployeeDto(entity.getId());
+    }
+
+
 }
