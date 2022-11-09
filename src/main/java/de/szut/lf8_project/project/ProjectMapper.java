@@ -31,8 +31,8 @@ public class ProjectMapper {
             entity.setFinalEndDate(dto.getFinalEndDate());
 
             // Mitarbeiter zuweisen
-            entity.setMainEmployee(mainEmployee);
-            entity.setEmployees(employees);
+//            entity.setMainEmployee(mainEmployee);
+//            entity.setEmployees(employees);
 
             // gefüllte entity zurückgeben
             return entity;
@@ -45,13 +45,13 @@ public class ProjectMapper {
             dto.setStartDate(entity.getStartDate());
             dto.setEstimatedEndDate(entity.getEstimatedEndDate());
             dto.setFinalEndDate(entity.getFinalEndDate());
-            dto.setMainEmployee(entity.getMainEmployee().getId());
-            dto.setEmployees(
-                    entity
-                            .getEmployees()
-                            .stream()
-                            .map(EmployeeEntity::getId)
-                            .collect(Collectors.toSet()));
+//            dto.setMainEmployee(entity.getMainEmployee().getId());
+//            dto.setEmployees(
+//                    entity
+//                            .getEmployees()
+//                            .stream()
+//                            .map(EmployeeEntity::getId)
+//                            .collect(Collectors.toSet()));
             return dto;
         }
 }

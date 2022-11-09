@@ -14,5 +14,5 @@ public class GetEmployeeDto
     private String postcode;
     private String city;
     private String phone;
-    private Set<String> skillSet;
+    private String[] skillSet;
 }

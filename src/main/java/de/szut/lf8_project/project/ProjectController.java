@@ -32,9 +32,10 @@ public class ProjectController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<GetProjectDto> createProject(@RequestBody @Valid AddProjectDto dto){
+    public ResponseEntity<GetProjectDto> createProject(@RequestBody @Valid AddProjectDto dto,
+                                                       @RequestHeader("Authentication") String token){
         // Existierende Mitarbeiter aus dem Mitarbeiter Service laden.
-        EmployeeEntity mainEmployee = employeeService.readById(dto.getMainEmployeeId());
+        EmployeeEntity mainEmployee = employeeService.readById(dto.getMainEmployeeId(), token);
         Set<EmployeeEntity> employees = employeeService.readById(dto.getEmployees());
 
         // Not Found Response zurückgeben wenn, Mitarbeiter nicht gefunden wurden.
@@ -81,15 +82,15 @@ public class ProjectController {
      * @param employeeId
      * @return
      */
-    @GetMapping("/{employeeId}")
-    public ResponseEntity<List<GetProjectDto>> readByEmployeeId(@PathVariable Long employeeId) {
-        List<GetProjectDto> response = this.service
-                .readByEmployeeId(employeeId)
-                .stream()
-                .map(projectMapper::MapProjectToGetProjectDto)
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(response, HttpStatus.FOUND);
-    }
+//    @GetMapping("/{employeeId}")
+//    public ResponseEntity<List<GetProjectDto>> readByEmployeeId(@PathVariable Long employeeId) {
+//        List<GetProjectDto> response = this.service
+//                .readByEmployeeId(employeeId)
+//                .stream()
+//                .map(projectMapper::MapProjectToGetProjectDto)
+//                .collect(Collectors.toList());
+//
+//        return new ResponseEntity<>(response, HttpStatus.FOUND);
+//    }
 
 }

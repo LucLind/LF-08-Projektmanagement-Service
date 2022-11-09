@@ -3,14 +3,29 @@ package de.szut.lf8_project.employee;
 import de.szut.lf8_project.employee.dto.EmployeesForAQualificationDto;
 import de.szut.lf8_project.employee.dto.GetEmployeeDto;
 import de.szut.lf8_project.qualification.QualificationEntity;
+import de.szut.lf8_project.qualification.QualificationMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+
 
 @Service
 public class EmployeeMapper {
 
-    public EmployeeEntity GetEmployeeDtoToEmployeeEntity(GetEmployeeDto dto, Set<QualificationEntity> skillSet){
+    public static GetEmployeeDto EntityToGetEmployeeDto(EmployeeEntity entity){
+        var dto = new GetEmployeeDto();
+        dto.setId(entity.getId());
+        dto.setCity(entity.getCity());
+        dto.setLastName(entity.getLastName());
+        dto.setFirstName(entity.getFirstName());
+        dto.setStreet(entity.getStreet());
+        dto.setPostcode(entity.getPostcode());
+        dto.setPhone(entity.getPhone());
+        return dto;
+    }
+    public static EmployeeEntity GetEmployeeDtoToEmployeeEntity(GetEmployeeDto dto){
         var entity = new EmployeeEntity();
         entity.setId(dto.getId());
         entity.setFirstName(dto.getFirstName());
@@ -19,8 +34,6 @@ public class EmployeeMapper {
         entity.setCity(dto.getCity());
         entity.setPostcode(dto.getPostcode());
         entity.setPhone(dto.getPhone());
-        entity.setSkillSet(skillSet);
-
         return entity;
     }
 

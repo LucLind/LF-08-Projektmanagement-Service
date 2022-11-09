@@ -24,10 +24,10 @@ public class ProjectEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private EmployeeEntity mainEmployee;
-    @ManyToMany
-    private Set<EmployeeEntity> employees;
+//    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//    private EmployeeEntity mainEmployee;
+//    @ManyToMany
+//    private Set<EmployeeEntity> employees;
     @ManyToOne
     private CustomerEntity customer;
     private String comment;

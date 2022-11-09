@@ -32,10 +32,10 @@ public class ProjectService {
         return opt.get();
     }
 
-    public List<ProjectEntity> readByEmployeeId(Long employeeId){
-        return this.repository.findByEmployeesId(employeeId);
-
-    }
+//    public List<ProjectEntity> readByEmployeeId(Long employeeId){
+//        return this.repository.findByEmployeesId(employeeId);
+//
+//    }
 
     public ProjectEntity update(ProjectEntity entity){
         // TODO
