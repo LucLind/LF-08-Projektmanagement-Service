@@ -133,6 +133,10 @@ public class ProjectController {
         return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 
+    /**
+     * Delete Endpunkt für ein Projekt
+     * @param id
+     */
 
     @Operation(summary = "Löscht ein Projekt anhand seiner ID")
     @ApiResponses(value = {
@@ -199,5 +203,26 @@ public class ProjectController {
     }
 
 
+    /**
+     * Update Endpunkt für ein Projekt
+     * @param id
+     * @param dto
+     */
+    @Operation(summary = "Update eines Projekts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Projekt erfolgreich geupdated",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GetProjectDto.class))}),
+            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
+                    content = @Content)})
+    @PutMapping("/{id}")
+    public ResponseEntity<GetProjectDto> updateProject(@PathVariable Long id, @RequestBody AddProjectDto dto, EmployeeEntity mainEmployee, Set<EmployeeEntity> employees) {
+        ProjectEntity entity = this.projectMapper.MapAddProjectDtoToProject(dto, mainEmployee, employees);
+        entity.setId(id);
+        entity = this.service.update(entity);
+        return ResponseEntity.ok(this.projectMapper.MapProjectToGetProjectDto(entity));
+    }
 
-}
+    }

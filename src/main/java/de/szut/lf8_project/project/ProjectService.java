@@ -39,9 +39,18 @@ public class ProjectService {
 
     }
 
-    public ProjectEntity update(ProjectEntity entity){
-        // TODO
-        return null;
+    public ProjectEntity update(ProjectEntity project){
+        ProjectEntity entity = this.readById(project.getId());
+        entity.setDescription(project.getDescription());
+        entity.setMainEmployee(project.getMainEmployee());
+        entity.setEmployees(project.getEmployees());
+        entity.setCustomer(project.getCustomer());
+        entity.setComment(project.getComment());
+        entity.setStartDate(project.getStartDate());
+        entity.setEstimatedEndDate(project.getEstimatedEndDate());
+        entity.setFinalEndDate(project.getFinalEndDate());
+
+        return this.repository.save(entity);
     }
 
     public void delete(ProjectEntity entity) {
