@@ -11,4 +11,6 @@ public class QualificationService {
         this.repository = repository;
         this.qualificationMapper = qualificationMapper;
     }
+
+
 }

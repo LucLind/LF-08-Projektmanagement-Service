@@ -47,4 +47,12 @@ public class ProjectService {
     public void delete(ProjectEntity entity) {
         this.repository.delete(entity);
     }
+
+
+    public boolean projectExists(){
+        // TODO check if project exists
+        return true;
+    }
+
+
 }

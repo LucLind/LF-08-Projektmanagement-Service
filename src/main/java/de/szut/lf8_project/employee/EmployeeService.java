@@ -48,4 +48,15 @@ public class EmployeeService {
     public List<EmployeeEntity> findBySkill(String skill) {
         return this.repository.findBySkill(skill);
     }
+
+    public boolean employeeIsValid(Long id){
+        // TODO check if the employee is valid
+        return false;
+    }
+
+
+    public boolean employeeHasSkill(Long id,String skill){
+        // TODO check if the employee has the qualification
+        return true;
+    }
 }
