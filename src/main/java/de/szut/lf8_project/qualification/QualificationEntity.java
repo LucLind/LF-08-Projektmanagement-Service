@@ -8,19 +8,15 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity
-@Table(name = "qualification")
 public class QualificationEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String skill;
-    @ManyToMany
-    private List<EmployeeEntity> employees;
+    private Set<EmployeeEntity> employees;
 }

@@ -1,6 +1,7 @@
 package de.szut.lf8_project.employee;
 
 import de.szut.lf8_project.project.ProjectEntity;
+import de.szut.lf8_project.qualification.QualificationEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,16 +9,13 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-@Entity
-@Table(name="employee")
 public class EmployeeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
     private String lastName;
@@ -25,10 +23,7 @@ public class EmployeeEntity {
     private String postcode;
     private String city;
     private String phone;
-    //TODO Qualification entity erstellen
-    private String skillSet;
-    @OneToOne
+    private Set<QualificationEntity> skillSet;
     private ProjectEntity mainProject;
-    @ManyToMany
     private List<ProjectEntity> involvedProjects;
 }
