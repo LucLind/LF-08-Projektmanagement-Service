@@ -1,11 +1,14 @@
 package de.szut.lf8_project.employee;
 
 import de.szut.lf8_project.employee.dto.EmployeesForAQualificationDto;
+import de.szut.lf8_project.project.dto.GetProjectDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -37,11 +40,13 @@ public class EmployeeController {
             @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
                     content = @Content)})
     @GetMapping("/qualifikation")
-    public List<EmployeesForAQualificationDto> findAllEmployeesByQualification(@RequestParam String skill) {
-        return this.service
+    public ResponseEntity<List<EmployeesForAQualificationDto>> findAllEmployeesByQualification(@RequestParam String skill) {
+        List<EmployeesForAQualificationDto> response = this.service
                 .findBySkill(skill)
                 .stream()
                 .map(e -> this.employeeMapper.mapToGetDto(e))
                 .collect(Collectors.toList());
+
+        return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 }
