@@ -9,7 +9,7 @@ import java.util.Set;
 public class EmployeesForAQualificationDto
 {
     private Long id;
-    private String skill;
+    private Set<QualificationEntity> skill;
     private Set<GetEmployeeNameDto> employees;
 
     public EmployeesForAQualificationDto(Long id, Set<QualificationEntity> skillSet) {
