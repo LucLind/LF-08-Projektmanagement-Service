@@ -103,9 +103,9 @@ public class ProjectController {
             @ApiResponse(responseCode = "401", description = "keine Berechtigung",
                     content = @Content)})
     @GetMapping("/{id}")
-    public GetProjectDto readById(@PathVariable Long id){
+    public ResponseEntity<GetProjectDto> readById(@PathVariable Long id){
         ProjectEntity entity = this.service.readById(id);
-        return projectMapper.MapProjectToGetProjectDto(entity);
+        return ResponseEntity.ok(projectMapper.MapProjectToGetProjectDto(entity));
     }
 
     /**
