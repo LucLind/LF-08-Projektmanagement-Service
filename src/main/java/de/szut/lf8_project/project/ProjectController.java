@@ -2,19 +2,12 @@ package de.szut.lf8_project.project;
 
 import de.szut.lf8_project.employee.EmployeeEntity;
 import de.szut.lf8_project.employee.EmployeeService;
-<<<<<<< HEAD
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
-=======
-import de.szut.lf8_project.hello.dto.HelloGetDto;
->>>>>>> 74becc48c1f490c30883874a86844c951efed003
 import de.szut.lf8_project.project.dto.AddProjectDto;
 import de.szut.lf8_project.project.dto.GetProjectDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
-<<<<<<< HEAD
-=======
 import io.swagger.v3.oas.annotations.media.Schema;
->>>>>>> 74becc48c1f490c30883874a86844c951efed003
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
@@ -48,7 +41,7 @@ public class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Projekt erstellt",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HelloGetDto.class))}),
+                            schema = @Schema(implementation = GetProjectDto.class))}),
             @ApiResponse(responseCode = "400", description = "ungültiges JSON gepostet",
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "keine Berechtigung",
@@ -83,7 +76,7 @@ public class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Liste aller Projekte",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HelloGetDto.class))}),
+                            schema = @Schema(implementation = GetProjectDto.class))}),
             @ApiResponse(responseCode = "401", description = "keine Berechtigung",
                     content = @Content)})
     @GetMapping
@@ -103,7 +96,7 @@ public class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Projekt gefunden",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HelloGetDto.class))}),
+                            schema = @Schema(implementation = GetProjectDto.class))}),
             @ApiResponse(responseCode = "404", description = "Projekt anhand der ID nicht gefunden",
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "keine Berechtigung",
@@ -123,7 +116,7 @@ public class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Projekte des Mitarbeiters gefunden",
                     content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HelloGetDto.class))}),
+                            schema = @Schema(implementation = GetProjectDto.class))}),
             @ApiResponse(responseCode = "404", description = "Projekte anhand der Mitarbeiter-ID nicht gefunden",
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "keine Berechtigung",
