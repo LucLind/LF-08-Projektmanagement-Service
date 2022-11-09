@@ -1,5 +1,6 @@
 package de.szut.lf8_project.project;
 
+import de.szut.lf8_project.hello.HelloEntity;
 import de.szut.lf8_project.project.ProjectEntity;
 import de.szut.lf8_project.project.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -40,5 +41,10 @@ public class ProjectService {
     public ProjectEntity update(ProjectEntity entity){
         // TODO
         return null;
+    }
+
+    public void delete(ProjectEntity entity) {
+
+        this.repository.delete(entity);
     }
 }
