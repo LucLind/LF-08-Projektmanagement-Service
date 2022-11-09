@@ -32,4 +32,8 @@ public class EmployeeService {
         // TODO
         return new HashSet<EmployeeEntity>();
     }
+
+    public List<EmployeeEntity> findByMessage(String message) {
+        return this.repository.findByMessage(message);
+    }
 }

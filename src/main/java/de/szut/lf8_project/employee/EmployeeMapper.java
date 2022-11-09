@@ -1,5 +1,6 @@
 package de.szut.lf8_project.employee;
 
+import de.szut.lf8_project.employee.dto.EmployeesForAQualificationDto;
 import de.szut.lf8_project.employee.dto.GetEmployeeDto;
 import de.szut.lf8_project.qualification.QualificationEntity;
 import org.springframework.stereotype.Service;
@@ -21,5 +22,9 @@ public class EmployeeMapper {
         entity.setSkillSet(skillSet);
 
         return entity;
+    }
+
+    public EmployeesForAQualificationDto mapToGetDto(EmployeeEntity entity) {
+        return new EmployeesForAQualificationDto(entity.getId(), entity.getSkillSet());
     }
 }

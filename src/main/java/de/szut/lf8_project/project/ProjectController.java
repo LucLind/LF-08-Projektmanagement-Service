@@ -82,13 +82,14 @@ public class ProjectController {
      * @return
      */
     @GetMapping("/{employeeId}")
-    public List<GetProjectDto> readByEmployeeId(@PathVariable Long employeeId){
-        return this.service
+    public ResponseEntity<List<GetProjectDto>> readByEmployeeId(@PathVariable Long employeeId) {
+        List<GetProjectDto> response = this.service
                 .readByEmployeeId(employeeId)
                 .stream()
                 .map(projectMapper::MapProjectToGetProjectDto)
                 .collect(Collectors.toList());
-    }
 
+        return new ResponseEntity<>(response, HttpStatus.FOUND);
+    }
 
 }
