@@ -25,7 +25,7 @@ public class EmployeeController {
     /**
      * Put Endpunkt: setzt Mitarbeiter anhand ihrer Qualifikation in ein Projekt ein
      * @params employeeId skillSet
-     * @return
+     * @return Eine Liste an Mitarbeitern anhand der gewählten Qualifikation
      */
     @Operation(summary = "Findet Mitarbeiter anhand Qualifikation")
     @ApiResponses(value = {
@@ -37,9 +37,9 @@ public class EmployeeController {
             @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
                     content = @Content)})
     @GetMapping("/qualifikation")
-    public List<EmployeesForAQualificationDto> findAllEmployeesByQualification(@RequestParam String message) {
+    public List<EmployeesForAQualificationDto> findAllEmployeesByQualification(@RequestParam String skill) {
         return this.service
-                .findByMessage(message)
+                .findBySkill(skill)
                 .stream()
                 .map(e -> this.employeeMapper.mapToGetDto(e))
                 .collect(Collectors.toList());

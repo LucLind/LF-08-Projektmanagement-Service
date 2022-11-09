@@ -33,7 +33,7 @@ public class EmployeeService {
         return new HashSet<EmployeeEntity>();
     }
 
-    public List<EmployeeEntity> findByMessage(String message) {
-        return this.repository.findByMessage(message);
+    public List<EmployeeEntity> findBySkill(String skill) {
+        return this.repository.findBySkill(skill);
     }
 }
