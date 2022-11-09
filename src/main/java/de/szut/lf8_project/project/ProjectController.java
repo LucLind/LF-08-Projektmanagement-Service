@@ -152,6 +152,11 @@ public class ProjectController {
         }
     }
 
+    /**
+     * Löscht einen Mitarbeiter aus einem Projekt und das Projekt aus dem MA
+     * @param id die Projekt-Id
+     * @param employeeId die MA-Id
+     */
     @Operation(summary = "Löscht einen Mitarbeiter anhand seiner ID aus einem Projekt")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Erfolgreich gelöscht"),
@@ -166,18 +171,30 @@ public class ProjectController {
         if (entity == null) {
             throw new ResourceNotFoundException("Projekt mit nachfolgender ID nicht gefunden = " + id);
         } else {
+            //MA aus Projekt entfernen
             Set<EmployeeEntity> employees = entity.getEmployees();
-            EmployeeEntity toBeFound = null;
+            EmployeeEntity EmployeetoBeFound = null;
             for (EmployeeEntity ent: employees) {
                 if (ent.getId() == employeeId){
-                    toBeFound = ent;
+                    EmployeetoBeFound = ent;
                     break;
                 }
             }
-            if (toBeFound == null){
+            if (EmployeetoBeFound == null){
                 throw new ResourceNotFoundException("Mitarbeiter mit nachfolgender ID nicht gefunden = " + employeeId);
             }
-            employees.remove(toBeFound);
+            employees.remove(EmployeetoBeFound);
+
+            //Projekt aus MA entfernen (involved)
+            List<ProjectEntity> involvedProjects = EmployeetoBeFound.getInvolvedProjects();
+            ProjectEntity invProject = null;
+            for (ProjectEntity ent: involvedProjects) {
+                if (ent.getId() == id){
+                    invProject = ent;
+                    break;
+                }
+            }
+            involvedProjects.remove(invProject);
         }
     }
 }
