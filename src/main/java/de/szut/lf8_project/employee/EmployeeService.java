@@ -2,6 +2,7 @@ package de.szut.lf8_project.employee;
 
 import com.google.gson.Gson;
 import de.szut.lf8_project.employee.dto.GetEmployeeDto;
+import de.szut.lf8_project.helper.JsonHelper;
 import de.szut.lf8_project.qualification.QualificationMapper;
 import org.keycloak.adapters.BearerTokenRequestAuthenticator;
 import org.springframework.http.HttpEntity;
@@ -51,47 +52,15 @@ public class EmployeeService {
             MyConn.setRequestMethod(HttpMethod.GET.name());
             MyConn.setRequestProperty(HttpHeaders.AUTHORIZATION, token);
 
-            int responseCode = MyConn.getResponseCode();
-            if (responseCode == MyConn.HTTP_OK) {
-                // Create a reader with the input stream reader.
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        MyConn.getInputStream()));
-                String inputLine;
-
-                // Create a string buffer
-                StringBuffer response = new StringBuffer();
-
-                // Write each of the input line
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                GetEmployeeDto dto = new Gson().fromJson(response.toString(), GetEmployeeDto.class);
-                //Show the output
-                System.out.println(response.toString());
-
+            var dto = JsonHelper.getDTOFromConnection(GetEmployeeDto.class, MyConn);
+            if (dto != null){
                 return EmployeeMapper.GetEmployeeDtoToEmployeeEntity(dto);
-            } else {
-                System.out.println("Error found !!!");
             }
 
         } catch (Exception e)
         {
             throw new RuntimeException(e);
         }
-
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
-
-        HttpEntity http = new HttpEntity(headers);
-        ResponseEntity response = this.restTemplate
-                .exchange(
-                        EMPLOYEE_SERVICE_URL+"/{id}",
-                        HttpMethod.GET, http, String.class, mainEmployeeId);
-
-        //var entity = EmployeeMapper.GetEmployeeDtoToEmployeeEntity(response.getBody());
         return null;
     }
     public Set<EmployeeEntity> readById(Set<Long> mainEmployeeId) {
