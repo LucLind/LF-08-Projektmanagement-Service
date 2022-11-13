@@ -202,23 +202,23 @@ public class ProjectController {
      * @param id
      */
 
-//    @Operation(summary = "Löscht ein Projekt anhand seiner ID")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "204", description = "Erfolgreich gelöscht"),
-//            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
-//                    content = @Content),
-//            @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
-//                    content = @Content)})
-//    @DeleteMapping("/{id}")
-//    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-//    public void deleteProjectById(@PathVariable long id) {
-//        var entity = this.service.readById(id);
-//        if (entity == null) {
-//            throw new ResourceNotFoundException("Projekt mit nachfolgender ID nicht gefunden = " + id);
-//        } else {
-//            this.service.delete(entity);
-//        }
-//    }
+    @Operation(summary = "Löscht ein Projekt anhand seiner ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Erfolgreich gelöscht"),
+            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
+                    content = @Content)})
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteProjectById(@PathVariable long id) {
+        var entity = this.service.readById(id);
+        if (entity == null) {
+            throw new ResourceNotFoundException("Projekt mit nachfolgender ID nicht gefunden = " + id);
+        }
+
+        this.service.delete(entity);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
     /**
      * Löscht einen Mitarbeiter aus einem Projekt und das Projekt aus dem MA
