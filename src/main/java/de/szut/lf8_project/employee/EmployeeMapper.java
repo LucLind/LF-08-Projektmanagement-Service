@@ -1,34 +1,77 @@
 package de.szut.lf8_project.employee;
 
-import de.szut.lf8_project.employee.dto.EmployeesForAQualificationDto;
-import de.szut.lf8_project.employee.dto.GetEmployeeDto;
-import de.szut.lf8_project.qualification.QualificationEntity;
+import de.szut.lf8_project.employee.dto.external.EmployeeNameAndSkillDataDTO;
+import de.szut.lf8_project.employee.dto.external.EmployeeRequestDTO;
+import de.szut.lf8_project.employee.dto.external.EmployeeResponseDTO;
+import de.szut.lf8_project.qualification.dto.EmployeesForAQualificationDTO;
+import de.szut.lf8_project.qualification.dto.QualificationDto;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeMapper {
 
-    public EmployeeEntity GetEmployeeDtoToEmployeeEntity(GetEmployeeDto dto, Set<QualificationEntity> skillSet){
+    public static EmployeeEntity GetEmployeeDtoToEmployeeEntity(EmployeeResponseDTO dto){
         var entity = new EmployeeEntity();
         entity.setId(dto.getId());
-        entity.setFirstName(dto.getFirstName());
-        entity.setLastName(dto.getLastName());
-        entity.setStreet(dto.getStreet());
-        entity.setCity(dto.getCity());
-        entity.setPostcode(dto.getPostcode());
-        entity.setPhone(dto.getPhone());
-        entity.setSkillSet(skillSet);
 
         return entity;
     }
 
-    public EmployeesForAQualificationDto mapToGetDto(EmployeeEntity entity) {
-        return new EmployeesForAQualificationDto(entity.getId(), entity.getSkillSet());
+    public static Employee EmployeeResponseDTOToEmployeeManagementEntity(EmployeeResponseDTO dto) {
+        var entity = new Employee();
+        entity.setId(dto.getId());
+        entity.setLastName(dto.getLastName());
+        entity.setFirstName(dto.getFirstName());
+        entity.setStreet(dto.getStreet());
+        entity.setPostcode(dto.getPostcode());
+        entity.setCity(dto.getCity());
+        entity.setPhone(dto.getPhone());
+        entity.setSkillSet(dto.getSkillSet());
+
+        return entity;
     }
-    public GetEmployeeDto mapToGetEmployeeDto(EmployeeEntity entity) {
-        return new GetEmployeeDto(entity.getId());
+
+    public static EmployeeNameAndSkillDataDTO EmployeeEntityToNameAndSkillDataDTO(Employee entity){
+        if (entity == null) return null;
+
+        var dto = new EmployeeNameAndSkillDataDTO();
+        dto.setId(entity.getId());
+        dto.setLastName(entity.getLastName());
+        dto.setFirstName(entity.getFirstName());
+
+        dto.setSkillSet(entity.getSkillSet()
+                .stream()
+                .map(s -> new QualificationDto(s))
+                .collect(Collectors.toSet()));
+
+        return dto;
+    }
+
+    public static Set<Employee> employeesForAQualificationDTOToEmployee(EmployeesForAQualificationDTO dto){
+        Set<Employee> employees = new HashSet<>();
+
+        for (var dtoEmployee : dto.getEmployees()) {
+            var employee = new Employee();
+            employee.setId(dtoEmployee.getId());
+            employee.setFirstName(dtoEmployee.getFirstName());
+            employee.setLastName(dtoEmployee.getLastName());
+
+            employees.add(employee);
+        }
+
+        return employees;
+    }
+
+    public EmployeesForAQualificationDTO mapToGetDto(EmployeeEntity entity) {
+        //return new EmployeesForAQualificationDto(entity.getId(), entity.getSkillSet());
+        return null;
+    }
+    public EmployeeRequestDTO mapToGetEmployeeDto(EmployeeEntity entity) {
+        return new EmployeeRequestDTO();
     }
 
 

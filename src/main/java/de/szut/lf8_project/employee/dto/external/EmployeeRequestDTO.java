@@ -1,14 +1,14 @@
-package de.szut.lf8_project.employee.dto;
+package de.szut.lf8_project.employee.dto.external;
 
-import de.szut.lf8_project.qualification.QualificationEntity;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Data
-public class GetEmployeeDto
+public class EmployeeRequestDTO
 {
-    private Long id;
     private String lastName;
     private String firstName;
     private String street;
@@ -17,8 +17,5 @@ public class GetEmployeeDto
     private String phone;
     private Set<String> skillSet;
 
-    public GetEmployeeDto(Long id) {
-        this.id = id;
-    }
 }
 

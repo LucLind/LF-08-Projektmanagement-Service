@@ -15,15 +15,24 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@Entity
+@Table(name="employee")
 public class EmployeeEntity {
+    @Id
     private Long id;
-    private String firstName;
-    private String lastName;
-    private String street;
-    private String postcode;
-    private String city;
-    private String phone;
-    private Set<QualificationEntity> skillSet;
-    private ProjectEntity mainProject;
-    private List<ProjectEntity> involvedProjects;
+//    @OneToOne(mappedBy = "mainEmployee",
+//            fetch = FetchType.LAZY,
+//            cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "mainEmployee",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL)
+    private Set<ProjectEntity> mainProject;
+
+    @ManyToMany(mappedBy = "involvedEmployees", cascade = CascadeType.MERGE)
+    private Set<ProjectEntity> involvedProjects;
+
+    public EmployeeEntity(Employee e){
+        this.id = e.getId();
+        e.setEntity(this);
+    }
 }

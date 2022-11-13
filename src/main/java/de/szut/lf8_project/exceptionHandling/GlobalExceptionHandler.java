@@ -24,5 +24,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetailsDTO, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(EmployeeNotFreeException.class)
+    public ResponseEntity<?> employeeNotFreeException(EmployeeNotFreeException ex, WebRequest request){
+        ErrorDetailsDTO errorDetailsDTO = new ErrorDetailsDTO(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetailsDTO, HttpStatus.BAD_REQUEST);
+    }
+
 
 }
