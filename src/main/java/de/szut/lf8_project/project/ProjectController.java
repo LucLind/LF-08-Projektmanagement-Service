@@ -1,6 +1,7 @@
 package de.szut.lf8_project.project;
 
 import de.szut.lf8_project.employee.Employee;
+import de.szut.lf8_project.employee.EmployeeEntity;
 import de.szut.lf8_project.employee.EmployeeService;
 import de.szut.lf8_project.exceptionHandling.EmployeeNotFreeException;
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -213,7 +215,7 @@ public class ProjectController {
     public ResponseEntity deleteProjectById(@PathVariable long id) {
         var entity = this.service.readById(id);
         if (entity == null) {
-            throw new ResourceNotFoundException("Projekt mit nachfolgender ID nicht gefunden = " + id);
+            throw new ResourceNotFoundException("Project not found with Id: " + id);
         }
 
         this.service.delete(entity);
@@ -225,46 +227,47 @@ public class ProjectController {
      * @param id die Projekt-Id
      * @param employeeId die MA-Id
      */
-//    @Operation(summary = "Löscht einen Mitarbeiter anhand seiner ID aus einem Projekt")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "204", description = "Erfolgreich gelöscht"),
-//            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
-//                    content = @Content),
-//            @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
-//                    content = @Content)})
-//    @DeleteMapping("/{employeeId}")
-//    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-//    public void deleteEmployeeFromProjectById(@PathVariable long id, long employeeId) {
-//        var entity = this.service.readById(id);
-//        if (entity == null) {
-//            throw new ResourceNotFoundException("Projekt mit nachfolgender ID nicht gefunden = " + id);
-//        } else {
-//            //MA aus Projekt entfernen
-//            Set<EmployeeEntity> employees = entity.getInvolvedEmployees();
-//            EmployeeEntity EmployeetoBeFound = null;
-//            for (EmployeeEntity ent: employees) {
-//                if (ent.getId() == employeeId){
-//                    EmployeetoBeFound = ent;
-//                    break;
-//                }
-//            }
-//            if (EmployeetoBeFound == null){
-//                throw new ResourceNotFoundException("Mitarbeiter mit nachfolgender ID nicht gefunden = " + employeeId);
-//            }
-//            employees.remove(EmployeetoBeFound);
-//
-//            //Projekt aus MA entfernen (involved)
-//            Set<ProjectEntity> involvedProjects = EmployeetoBeFound.getInvolvedProjects();
-//            ProjectEntity invProject = null;
-//            for (ProjectEntity ent: involvedProjects) {
-//                if (ent.getId() == id){
-//                    invProject = ent;
-//                    break;
-//                }
-//            }
-//            involvedProjects.remove(invProject);
-//        }
-//    }
+    @Operation(summary = "Löscht einen Mitarbeiter anhand seiner ID aus einem Projekt")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Erfolgreich gelöscht"),
+            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
+                    content = @Content)})
+    @DeleteMapping("/{projectId}/employee/{employeeId}")
+    public ResponseEntity deleteEmployeeFromProjectById(@PathVariable Long projectId, @PathVariable Long employeeId) {
+        var entity = this.service.readById(projectId);
+        if (entity == null) {
+            throw new ResourceNotFoundException("Project not found with Id: " + projectId);
+        }
+
+        //Verantwortlichen Mitarbeiter finden und entfernen
+        EmployeeEntity mainEmployee = entity.getMainEmployee();
+        if (mainEmployee != null && mainEmployee.getId() == employeeId){
+            entity.setMainEmployee(null);
+            service.save(entity);
+
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+
+        //Mitarbeiter aus involvierten Liste suchen und entfernen
+        Set<EmployeeEntity> employees = entity.getInvolvedEmployees();
+        EmployeeEntity EmployeetoBeFound = null;
+        for (EmployeeEntity ent: employees) {
+            if (Objects.equals(ent.getId(), employeeId)){
+                EmployeetoBeFound = ent;
+                break;
+            }
+        }
+        if (EmployeetoBeFound == null){
+            throw new ResourceNotFoundException("Mitarbeiter mit nachfolgender ID nicht gefunden = " + employeeId);
+        }
+        employees.remove(EmployeetoBeFound);
+        entity.setInvolvedEmployees(employees);
+        service.save(entity);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
 
     /**
