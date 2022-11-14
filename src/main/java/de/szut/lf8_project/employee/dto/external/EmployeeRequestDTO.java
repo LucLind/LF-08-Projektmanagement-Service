@@ -1,18 +1,21 @@
-package de.szut.lf8_project.employee.dto;
+package de.szut.lf8_project.employee.dto.external;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
 @Data
-public class GetEmployeeDto
+public class EmployeeRequestDTO
 {
-    private Long id;
     private String lastName;
     private String firstName;
     private String street;
     private String postcode;
     private String city;
     private String phone;
-    private String[] skillSet;
+    private Set<String> skillSet;
+
 }
+

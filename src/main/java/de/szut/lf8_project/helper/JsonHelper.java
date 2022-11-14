@@ -1,16 +1,16 @@
 package de.szut.lf8_project.helper;
 
 import com.google.gson.Gson;
-import de.szut.lf8_project.employee.EmployeeMapper;
-import de.szut.lf8_project.employee.dto.GetEmployeeDto;
-import de.szut.lf8_project.project.dto.GetProjectDto;
-import org.springframework.http.HttpStatus;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class JsonHelper<T> {
+
 
     public static <T> T getDTOFromConnection(Class<T> c, HttpURLConnection connection) throws Exception{
 
@@ -30,6 +30,9 @@ public class JsonHelper<T> {
             }
             in.close();
 
+            var string = response.toString();
+
+            var out = new Gson().fromJson(response.toString(), c);
             return new Gson().fromJson(response.toString(), c);
 
         } else {
@@ -38,4 +41,5 @@ public class JsonHelper<T> {
 
         return null;
     }
+
 }

@@ -2,8 +2,8 @@ package de.szut.lf8_project.qualification;
 
 import org.springframework.stereotype.Service;
 
-@Service
-public class QualificationService {
+
+//public class QualificationService {
 //    private QualificationRepository repository;
 //    private QualificationMapper qualificationMapper;
 //
@@ -11,4 +11,6 @@ public class QualificationService {
 //        this.repository = repository;
 //        this.qualificationMapper = qualificationMapper;
 //    }
-}
+//
+//
+//}
