@@ -3,11 +3,16 @@ package de.szut.lf8_project.project;
 import de.szut.lf8_project.employee.Employee;
 import de.szut.lf8_project.employee.EmployeeEntity;
 import de.szut.lf8_project.employee.EmployeeService;
+import de.szut.lf8_project.employee.dto.internal.EmployeeRoleDTO;
 import de.szut.lf8_project.exceptionHandling.EmployeeNotFreeException;
+import de.szut.lf8_project.exceptionHandling.EmployeeWrongSkillException;
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
 import de.szut.lf8_project.project.dto.AddProjectDto;
 import de.szut.lf8_project.project.dto.GetProjectDto;
+import de.szut.lf8_project.project.dto.GetProjectEmployeesDTO;
+import de.szut.lf8_project.role.EmployeeRoleKey;
 import de.szut.lf8_project.role.ProjectEmployeeRoleEntity;
+import de.szut.lf8_project.role.ProjectEmployeeRoleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,7 +25,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,14 +35,16 @@ public class ProjectController {
     private final ProjectService service;
     private final ProjectMapper projectMapper;
     private final EmployeeService employeeService;
+    private final ProjectEmployeeRoleService roleService;
 
-    public ProjectController(ProjectService service, ProjectMapper projectMapper, EmployeeService employeeService) {
+    public ProjectController(ProjectService service, ProjectMapper projectMapper, EmployeeService employeeService, ProjectEmployeeRoleService roleService) {
         this.service = service;
         this.projectMapper = projectMapper;
         this.employeeService = employeeService;
+        this.roleService = roleService;
     }
 
-    //region Post
+    //region |========================= Post Project =========================|
     /**
      * Post Endpunkt für Projekte anlegen
      * @param dto
@@ -57,21 +63,25 @@ public class ProjectController {
     public ResponseEntity<GetProjectDto> postProject(@RequestBody @Valid AddProjectDto dto,
                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
 
-        // Existierende Mitarbeiter aus dem Mitarbeiter Service laden.
         Employee mainEmployee = null;
         Set<Employee> employees = null;
 
-        if (dto.getMainEmployeeId() != null){
-            mainEmployee = employeeService.readById(dto.getMainEmployeeId(), token);
+        if (dto.getMainEmployee() != null){
+            mainEmployee = employeeService.readById(dto.getMainEmployee().getEmployeeId(), token);
             if (mainEmployee == null){
-                return null;
+                throw new ResourceNotFoundException("No Employee found with ID: " + dto.getMainEmployee().getEmployeeId());
+            }
+            if (dto.getMainEmployee().getRole() != null &&
+                    !mainEmployee.getSkillSet().contains(dto.getMainEmployee().getRole())){
+                throw new EmployeeWrongSkillException("Employee with ID: " + mainEmployee.getId() + " lacks requested skill: " + dto.getMainEmployee().getRole());
             }
             if(!employeeService.employeeIsFree(mainEmployee, dto)){
                 throw new EmployeeNotFreeException("Main employee is has no time for the requested project");
             }
         }
         if (!dto.getEmployees().isEmpty()){
-            employees = employeeService.readById(dto.getEmployees(), token);
+            var employeeIds = dto.getEmployees().stream().map(EmployeeRoleDTO::getEmployeeId).collect(Collectors.toSet());
+            employees = employeeService.readById(employeeIds, token);
             if (employees.isEmpty()){
                 return null;
             }
@@ -86,12 +96,12 @@ public class ProjectController {
         service.save(project);
 
         // Response erzeugt und zurückgegeben.
-        var response = projectMapper.MapProjectToGetProjectDto(project, mainEmployee, employees);
+        var response = ProjectMapper.MapProjectToGetProjectDto(project);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     //endregion
 
-    //region Get All
+    //region |========================= Get All =========================|
     /**
      * Get Endpunkt für alle Projekte
      * @return
@@ -110,10 +120,7 @@ public class ProjectController {
         var response = new HashSet<GetProjectDto>();
 
         for (ProjectEntity entity : entities) {
-            var mainEmployee = getMainEmployee(entity, token);
-            var employees = getEmployees(entity, token);
-
-            response. add(projectMapper.MapProjectToGetProjectDto(entity, mainEmployee, employees));
+            response. add(ProjectMapper.MapProjectToGetProjectDto(entity));
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -121,7 +128,7 @@ public class ProjectController {
 
     //endregion
 
-    // region Read By Id
+    // region |========================= Get by ID =========================|
     /**
      * Get Endpunkt für ein Projekt
      * @param id
@@ -143,68 +150,57 @@ public class ProjectController {
             throw new ResourceNotFoundException("Project not found with Id: " + id);
         }
 
-        var mainEmployee = getMainEmployee(entity, token);
-        var employees = getEmployees(entity, token);
-
-        var response = projectMapper.MapProjectToGetProjectDto(entity, mainEmployee, employees);
+        var response = projectMapper.MapProjectToGetProjectDto(entity);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     //endregion
 
-    @PutMapping("/{id}/qualification/{skill}")
-    public ResponseEntity<GetProjectDto> addEmployeeBySkill(@PathVariable Long id,
+    //region |========================= Put Employee by Skill =========================|
+    @PutMapping("/{projectId}/employee/{employeeId}/qualification/{skill}")
+    public ResponseEntity<GetProjectDto> addEmployeeBySkill(@PathVariable Long projectId,
+                                                            @PathVariable Long employeeId,
                                                             @PathVariable String skill,
                                                             @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
-        ProjectEntity project = service.readById(id);
-        Set<Employee> employees = employeeService.readBySkill(skill, token);
+        ProjectEntity project = service.readById(projectId);
+        Employee employee = employeeService.readById(employeeId, token);
 
-        for (Employee e : employees) {
-            if (employeeService.employeeIsFree(e, project)){
-                project.setMainEmployee(e.getEntity());
-                project = service.save(project);
-                break;
-            }
+        if (project == null && employee == null){
+            throw new ResourceNotFoundException("No project with ID: " + projectId +  "/n/rNo employee with ID: " + employeeId);
+        }
+        else if( project == null){
+            throw new ResourceNotFoundException("No project with ID: " + projectId);
+        }
+        else if( employee == null){
+            throw new ResourceNotFoundException("No employee with ID: " + employeeId);
         }
 
-        Employee mainEmployee = getMainEmployee(project, token);
-        employees = getEmployees(project, token);
-        var dto = projectMapper.MapProjectToGetProjectDto(project, mainEmployee, employees);
+        if (!employee.getSkillSet().contains(skill)){
+            throw new EmployeeWrongSkillException("The requested employee lacks the desired skill: " + skill);
+        }
+
+        if (!employeeService.employeeIsFree(employee, project)){
+            throw new EmployeeNotFreeException("Employee is has no time for the requested project");
+        }
+
+        if (employeeService.employeeIsFree(employee, project)){
+            var role = new ProjectEmployeeRoleEntity();
+            role.setId(new EmployeeRoleKey(projectId, employeeId));
+            role.setProject(project);
+            role.setEmployee(employee.getEntity());
+            role.setSkill(skill);
+            roleService.save(role);
+        }
+
+        var dto = ProjectMapper.MapProjectToGetProjectDto(project);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
-    /**
-     * Get Endpunkt für alle Projekte eines Mitarbeiters
-     * @param employeeId
-     * @return
-     */
-    @Operation(summary = "finde alle Projekte eines Mitarbeiters")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Projekte des Mitarbeiters gefunden",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = GetProjectDto.class))}),
-            @ApiResponse(responseCode = "404", description = "Projekte anhand der Mitarbeiter-ID nicht gefunden",
-                    content = @Content),
-            @ApiResponse(responseCode = "401", description = "keine Berechtigung",
-                    content = @Content)})
-    @GetMapping("/employee/{employeeId}")
-    public ResponseEntity<List<GetProjectDto>> readByEmployeeId(@PathVariable Long employeeId,
-                                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-//        var employee = employeeService.readById(employeeId, token);
-//        var projects = service.readByEmployeeId(employeeId);
-//
-//        List<GetProjectDto> response = this.service
-//                .readByEmployeeId(employeeId)
-//                .stream()
-//                .map(p -> projectMapper.MapProjectToGetProjectDto(p, employee))
-//                .collect(Collectors.toList());
+    //endregion
 
-        return null;
-    }
-
+    //region |========================= Delete Project =========================|
     /**
      * Delete Endpunkt für ein Projekt
      * @param id
      */
-
     @Operation(summary = "Löscht ein Projekt anhand seiner ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Erfolgreich gelöscht"),
@@ -222,7 +218,9 @@ public class ProjectController {
         this.service.delete(entity);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+    //endregion
 
+    //region |========================= Remove Employee =========================|
     /**
      * Löscht einen Mitarbeiter aus einem Projekt und das Projekt aus dem MA
      * @param projectId die Projekt-Id
@@ -253,10 +251,10 @@ public class ProjectController {
 
         //Mitarbeiter aus involvierten Liste suchen und entfernen
         Set<ProjectEmployeeRoleEntity> employees = entity.getInvolvedEmployees();
-        EmployeeEntity EmployeetoBeFound = null;
+        ProjectEmployeeRoleEntity EmployeetoBeFound = null;
         for (var role: employees) {
             if (Objects.equals(role.getEmployee().getId(), employeeId)){
-                EmployeetoBeFound = role.getEmployee();
+                EmployeetoBeFound = role;
                 break;
             }
         }
@@ -265,12 +263,29 @@ public class ProjectController {
         }
         employees.remove(EmployeetoBeFound);
         entity.setInvolvedEmployees(employees);
-        service.save(entity);
+        roleService.delete(EmployeetoBeFound);
+        entity = service.save(entity);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+    //endregion
 
+    //region |===================== Get Employees from Project =========================|
+    @GetMapping("{id}/employee")
+    public ResponseEntity<GetProjectEmployeesDTO> getEmployeesFromProject(@PathVariable Long id,
+                                                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+        ProjectEntity entity = service.readById(id);
+        if (entity == null){
+            throw new ResourceNotFoundException("Project not found with Id: " + id);
+        }
 
+        var mainEmployee = getMainEmployee(entity, token);
+        var employees = getEmployees(entity, token);
+
+        var response = ProjectMapper.mapProjectToGetProjectEmployeesDTO(entity, mainEmployee, employees);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    //endregion
     /**
      * Update Endpunkt für ein Projekt
      * //@param id

@@ -1,10 +1,9 @@
 package de.szut.lf8_project.project.dto;
 
-import de.szut.lf8_project.employee.EmployeeEntity;
+import de.szut.lf8_project.employee.dto.internal.EmployeeRoleDTO;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Set;
@@ -14,9 +13,9 @@ public class AddProjectDto {
     @NotBlank(message = "Description is mandatory")
     private String description;
 
-    private Long mainEmployeeId;
+    private EmployeeRoleDTO mainEmployee;
 
-    private Set<Long> employees;
+    private Set<EmployeeRoleDTO> employees;
 
     @NotBlank(message = "Comment is mandatory")
     private String comment;

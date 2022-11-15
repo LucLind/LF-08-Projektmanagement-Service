@@ -32,6 +32,7 @@ public class ProjectEntity {
 
     @ManyToOne
     private EmployeeEntity mainEmployee;
+    private String mainEmployeeQualification;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     private Set<ProjectEmployeeRoleEntity> involvedEmployees;

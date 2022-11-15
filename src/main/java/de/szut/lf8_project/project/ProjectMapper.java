@@ -2,8 +2,10 @@ package de.szut.lf8_project.project;
 
 import de.szut.lf8_project.employee.Employee;
 import de.szut.lf8_project.employee.EmployeeMapper;
+import de.szut.lf8_project.employee.dto.internal.EmployeeNameRoleDTO;
 import de.szut.lf8_project.project.dto.AddProjectDto;
 import de.szut.lf8_project.project.dto.GetProjectDto;
+import de.szut.lf8_project.project.dto.GetProjectEmployeesDTO;
 import de.szut.lf8_project.role.EmployeeRoleKey;
 import de.szut.lf8_project.role.ProjectEmployeeRoleEntity;
 import org.springframework.stereotype.Service;
@@ -54,7 +56,7 @@ public class ProjectMapper {
             return entity;
         }
 
-        public GetProjectDto MapProjectToGetProjectDto(ProjectEntity project, Employee mainEmployee, Set<Employee> employees){
+        public static GetProjectDto MapProjectToGetProjectDto(ProjectEntity project){
             GetProjectDto dto = new GetProjectDto();
             dto.setId(project.getId());
             dto.setDescription(project.getDescription());
@@ -63,13 +65,14 @@ public class ProjectMapper {
             dto.setEstimatedEndDate(project.getEstimatedEndDate());
             dto.setFinalEndDate(project.getFinalEndDate());
 
-            var mainEmployeeDTO = EmployeeMapper.EmployeeEntityToNameAndSkillDataDTO(mainEmployee);
-            dto.setMainEmployee(mainEmployeeDTO);
+            if (project.getMainEmployee() != null) {
+                dto.setMainEmployee(project.getMainEmployee().getId());
+            }
 
-            if (employees != null) {
-                var employeeDtos = employees
+            if (project.getInvolvedEmployees() != null) {
+                var employeeDtos = project.getInvolvedEmployees()
                         .stream()
-                        .map(e -> EmployeeMapper.EmployeeEntityToNameAndSkillDataDTO(e))
+                        .map(e -> e.getEmployee().getId())
                         .collect(Collectors.toSet());
                 dto.setEmployees(employeeDtos);
             }
@@ -77,8 +80,39 @@ public class ProjectMapper {
                 dto.setEmployees(new HashSet<>());
             }
 
-            //dto.setCustomer(entity.getCustomer().getId());
             dto.setCustomer(357l);
+            return dto;
+        }
+
+        public static GetProjectEmployeesDTO mapProjectToGetProjectEmployeesDTO(ProjectEntity project, Employee mainEmployee, Set<Employee> employees){
+            var dto = new GetProjectEmployeesDTO();
+
+            dto.setProjectId(project.getId());
+            dto.setDescription(project.getDescription());
+
+            if (mainEmployee != null) {
+                var mainEmployeeDto = new EmployeeNameRoleDTO();
+                mainEmployeeDto.setEmployeeId(mainEmployee.getId());
+                mainEmployeeDto.setLastName(mainEmployeeDto.getLastName());
+                mainEmployeeDto.setRole(project.getMainEmployeeQualification());
+                dto.setMainEmployee(mainEmployeeDto);
+            }
+
+            var employeeDtos = new HashSet<EmployeeNameRoleDTO>();
+            for (Employee empl : employees){
+                var eDto = new EmployeeNameRoleDTO();
+                eDto.setEmployeeId(empl.getId());
+                eDto.setLastName(empl.getLastName());
+                for (ProjectEmployeeRoleEntity p : empl.getEntity().getInvolvedProjects()){
+                    if (p.getProject().getId().equals(project.getId())){
+                        eDto.setRole(p.getSkill());
+                        break;
+                    }
+                }
+                employeeDtos.add(eDto);
+            }
+            dto.setEmployees(employeeDtos);
+
             return dto;
         }
 }

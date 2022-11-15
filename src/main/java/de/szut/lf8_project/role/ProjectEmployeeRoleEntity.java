@@ -12,12 +12,12 @@ public class ProjectEmployeeRoleEntity {
     @EmbeddedId
     EmployeeRoleKey id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @MapsId("projectId")
     @JoinColumn(name = "project_Id")
     private ProjectEntity project;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @MapsId("employeeId")
     @JoinColumn(name = "employee_Id")
     private EmployeeEntity employee;

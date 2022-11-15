@@ -30,5 +30,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorDetailsDTO, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EmployeeWrongSkillException.class)
+    public ResponseEntity<?> employeeWrongSkillException(EmployeeWrongSkillException ex, WebRequest request){
+        ErrorDetailsDTO errorDetailsDTO = new ErrorDetailsDTO(new Date(), ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorDetailsDTO, HttpStatus.BAD_REQUEST);
+    }
+
 
 }

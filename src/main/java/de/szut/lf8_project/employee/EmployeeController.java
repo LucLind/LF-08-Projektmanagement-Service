@@ -3,6 +3,11 @@ package de.szut.lf8_project.employee;
 import de.szut.lf8_project.employee.dto.external.EmployeeNameAndSkillDataDTO;
 import de.szut.lf8_project.employee.dto.external.EmployeeRequestDTO;
 import de.szut.lf8_project.employee.dto.external.EmployeeResponseDTO;
+import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
+import de.szut.lf8_project.project.ProjectEntity;
+import de.szut.lf8_project.project.ProjectMapper;
+import de.szut.lf8_project.project.ProjectService;
+import de.szut.lf8_project.project.dto.GetProjectDto;
 import de.szut.lf8_project.qualification.dto.EmployeesForAQualificationDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,69 +29,33 @@ import java.util.stream.Collectors;
 public class EmployeeController {
     private final EmployeeService service;
     private final EmployeeMapper employeeMapper;
+    private final ProjectService projectService;
 
-    public EmployeeController(EmployeeService service, EmployeeMapper employeeMapper){
+    public EmployeeController(EmployeeService service, ProjectService projectService, EmployeeMapper employeeMapper){
         this.service = service;
+        this.projectService = projectService;
         this.employeeMapper = employeeMapper;
     }
 
-    @GetMapping
-    public ResponseEntity<Set<EmployeeNameAndSkillDataDTO>> findAll(@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
-        var employee = service.readAll(token);
-        var response = employee
-                .stream()
-                .map(e -> employeeMapper.EmployeeEntityToNameAndSkillDataDTO(e))
-                .collect(Collectors.toSet());
+    @GetMapping("{id}/project")
+    public ResponseEntity<Set<GetProjectDto>> getEmployeeProjects(@PathVariable Long id,
+                                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+        var employee = service.readById(id, token);
+        if (employee == null){
+            throw new ResourceNotFoundException("Employee not found with Id: " + id);
+        }
+
+        var response = new HashSet<GetProjectDto>();
+
+        if (employee.getEntity().getMainProject() != null && !employee.getEntity().getMainProject().isEmpty()){
+            for (var project : employee.getEntity().getMainProject()){
+                response.add(ProjectMapper.MapProjectToGetProjectDto(project));
+            }
+        }
+        for (var role : employee.getEntity().getInvolvedProjects()){
+            response.add(ProjectMapper.MapProjectToGetProjectDto(role.getProject()));
+        }
+
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    /**
-     * Get Endpunkt: findet Mitarbeiter anhand ihrer Qualifikation
-     * @params employeeId skillSet
-     * @return Eine Liste an Mitarbeitern anhand der gewählten Qualifikation
-     */
-//    @Operation(summary = "Findet Mitarbeiter anhand Qualifikation")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Liste der Mitarbeiter mit jeweiliger Qualifikation",
-//                    content = {@Content(mediaType = "application/json",
-//                            schema = @Schema(implementation = EmployeesForAQualificationDTO.class))}),
-//            @ApiResponse(responseCode = "404", description = "Qualifikation nicht gefunden",
-//                    content = @Content),
-//            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
-//                    content = @Content)})
-//    @GetMapping("/qualification")
-//    public ResponseEntity<List<EmployeesForAQualificationDTO>> findAllEmployeesByQualification(@RequestParam String skill) {
-//        List<EmployeesForAQualificationDTO> response = this.service
-//                .readBySkill(skill)
-//                .stream()
-//                .map(e -> this.employeeMapper.mapToGetDto(e))
-//                .collect(Collectors.toList());
-//
-//        return new ResponseEntity<>(response, HttpStatus.FOUND);
-//    }
-
-    /**
-     * Get Endpunkt: findet Mitarbeiter anhand Projekt-ID
-     * @params id
-     * @return Eine Liste an Mitarbeitern anhand der gewählten Projekt-ID
-     */
-    @Operation(summary = "Findet Mitarbeiter anhand Projekt-ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Liste der Mitarbeiter mit jeweiliger Projekt-ID",
-                    content = {@Content(mediaType = "application/json",
-                            schema = @Schema(implementation = EmployeeRequestDTO.class))}),
-            @ApiResponse(responseCode = "404", description = "Projekt-ID nicht gefunden",
-                    content = @Content),
-            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
-                    content = @Content)})
-    @GetMapping("/{id}")
-    public ResponseEntity<List<EmployeeRequestDTO>> findAllEmployeesByProjectId(@PathVariable Long id) {
-        List<EmployeeRequestDTO> response = this.service
-                .readByProjectId(id)
-                .stream()
-                .map(e -> this.employeeMapper.mapToGetEmployeeDto(e))
-                .collect(Collectors.toList());
-
-        return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 }
