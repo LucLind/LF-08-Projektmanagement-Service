@@ -13,5 +13,5 @@ public class EmployeeResponseDTO {
     private String postcode;
     private String city;
     private String phone;
-    private String[] skillSet;
+    private Set<String> skillSet;
 }

@@ -7,6 +7,7 @@ import de.szut.lf8_project.exceptionHandling.EmployeeNotFreeException;
 import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
 import de.szut.lf8_project.project.dto.AddProjectDto;
 import de.szut.lf8_project.project.dto.GetProjectDto;
+import de.szut.lf8_project.role.ProjectEmployeeRoleEntity;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +38,7 @@ public class ProjectController {
         this.employeeService = employeeService;
     }
 
-    //region Create
+    //region Post
     /**
      * Post Endpunkt für Projekte anlegen
      * @param dto
@@ -53,8 +54,8 @@ public class ProjectController {
             @ApiResponse(responseCode = "401", description = "keine Berechtigung",
                     content = @Content)})
     @PostMapping
-    public ResponseEntity<GetProjectDto> createProject(@RequestBody @Valid AddProjectDto dto,
-                                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+    public ResponseEntity<GetProjectDto> postProject(@RequestBody @Valid AddProjectDto dto,
+                                                     @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
 
         // Existierende Mitarbeiter aus dem Mitarbeiter Service laden.
         Employee mainEmployee = null;
@@ -90,7 +91,7 @@ public class ProjectController {
     }
     //endregion
 
-    //region Find All
+    //region Get All
     /**
      * Get Endpunkt für alle Projekte
      * @return
@@ -103,7 +104,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "401", description = "keine Berechtigung",
                     content = @Content)})
     @GetMapping
-    public ResponseEntity<Set<GetProjectDto>> findAll(@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+    public ResponseEntity<Set<GetProjectDto>> getAll(@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         var entities = service.readAll();
 
         var response = new HashSet<GetProjectDto>();
@@ -136,7 +137,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "401", description = "keine Berechtigung",
                     content = @Content)})
     @GetMapping("/{id}")
-    public ResponseEntity<GetProjectDto> readById(@PathVariable Long id, @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+    public ResponseEntity<GetProjectDto> getById(@PathVariable Long id, @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
         ProjectEntity entity = service.readById(id);
         if (entity == null){
             throw new ResourceNotFoundException("Project not found with Id: " + id);
@@ -224,7 +225,7 @@ public class ProjectController {
 
     /**
      * Löscht einen Mitarbeiter aus einem Projekt und das Projekt aus dem MA
-     * @param id die Projekt-Id
+     * @param projectId die Projekt-Id
      * @param employeeId die MA-Id
      */
     @Operation(summary = "Löscht einen Mitarbeiter anhand seiner ID aus einem Projekt")
@@ -251,11 +252,11 @@ public class ProjectController {
         }
 
         //Mitarbeiter aus involvierten Liste suchen und entfernen
-        Set<EmployeeEntity> employees = entity.getInvolvedEmployees();
+        Set<ProjectEmployeeRoleEntity> employees = entity.getInvolvedEmployees();
         EmployeeEntity EmployeetoBeFound = null;
-        for (EmployeeEntity ent: employees) {
-            if (Objects.equals(ent.getId(), employeeId)){
-                EmployeetoBeFound = ent;
+        for (var role: employees) {
+            if (Objects.equals(role.getEmployee().getId(), employeeId)){
+                EmployeetoBeFound = role.getEmployee();
                 break;
             }
         }
@@ -272,8 +273,8 @@ public class ProjectController {
 
     /**
      * Update Endpunkt für ein Projekt
-     * @param id
-     * @param dto
+     * //@param id
+     * //@param dto
      */
 //    @Operation(summary = "Update eines Projekts")
 //    @ApiResponses(value = {
@@ -310,7 +311,7 @@ public class ProjectController {
                 return new HashSet<>();
             }
 
-            var ids = project.getInvolvedEmployees().stream().map(e -> e.getId()).collect(Collectors.toSet());
+            var ids = project.getInvolvedEmployees().stream().map(e -> e.getEmployee().getId()).collect(Collectors.toSet());
             return employeeService.readById(ids, token);
         }
     }

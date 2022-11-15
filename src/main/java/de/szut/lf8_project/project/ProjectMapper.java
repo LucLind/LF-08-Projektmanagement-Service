@@ -4,6 +4,8 @@ import de.szut.lf8_project.employee.Employee;
 import de.szut.lf8_project.employee.EmployeeMapper;
 import de.szut.lf8_project.project.dto.AddProjectDto;
 import de.szut.lf8_project.project.dto.GetProjectDto;
+import de.szut.lf8_project.role.EmployeeRoleKey;
+import de.szut.lf8_project.role.ProjectEmployeeRoleEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -37,7 +39,15 @@ public class ProjectMapper {
                 entity.setMainEmployee(mainEmployee.getEntity());
             }
             if(employees != null) {
-                entity.setInvolvedEmployees(employees.stream().map(e -> e.getEntity()).collect(Collectors.toSet()));
+                entity.setInvolvedEmployees(
+                        employees.stream().map(e -> {
+                            var r = new ProjectEmployeeRoleEntity();
+                            r.setEmployee(e.getEntity());
+                            r.setProject(entity);
+                            r.setSkill(e.getSkillSet().stream().findFirst().orElse(""));
+                            r.setId(new EmployeeRoleKey());
+                            return r;
+                        }).collect(Collectors.toSet()));
             }
 
             // gefüllte entity zurückgeben

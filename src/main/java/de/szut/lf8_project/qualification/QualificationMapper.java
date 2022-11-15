@@ -1,6 +1,6 @@
 package de.szut.lf8_project.qualification;
 
-import de.szut.lf8_project.qualification.dto.GetQualificationDto;
+
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
