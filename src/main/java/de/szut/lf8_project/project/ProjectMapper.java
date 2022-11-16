@@ -16,16 +16,19 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Project mapper class
+ */
 @Service
 public class ProjectMapper {
 
 
     /**
-     * Erzeugt leere Entity und weist daten zu.
-     * @param dto
-     * @param mainEmployee
-     * @param employees
-     * @return
+     * makes up new empty entity and fills it with data
+     * @param dto the addProjectDto
+     * @param mainEmployee the main employee
+     * @param employees the set of employees
+     * @return returns a project entity
      */
     public ProjectEntity MapAddProjectDtoToProject(AddProjectDto dto, Employee mainEmployee, Set<Employee> employees){
         // Leere Entity erzeugen
@@ -58,6 +61,12 @@ public class ProjectMapper {
         return entity;
     }
 
+    /**
+     * maps the put project dto to an existing project
+     * @param dto the put project dto
+     * @param entity the project entity
+     * @return return the mapped project entity
+     */
     public static ProjectEntity mapAddProjectDtoToExistingProject(PutProjectDTO dto, ProjectEntity entity){
         entity.setDescription(dto.getDescription());
         entity.setComment(dto.getComment());
@@ -68,6 +77,11 @@ public class ProjectMapper {
         return entity;
     }
 
+    /**
+     * maps a project to GetProjectDto
+     * @param project the project
+     * @return the GetProjectDto
+     */
     public static GetProjectDto MapProjectToGetProjectDto(ProjectEntity project){
         GetProjectDto dto = new GetProjectDto();
         dto.setId(project.getId());
@@ -96,6 +110,13 @@ public class ProjectMapper {
         return dto;
     }
 
+    /**
+     * maps Project to GetProjectEmployeesDTO
+     * @param project the project
+     * @param mainEmployee the main amployee
+     * @param employees the set of employees
+     * @return returns the GetProjectEmployeesDTO
+     */
     public static GetProjectEmployeesDTO mapProjectToGetProjectEmployeesDTO(ProjectEntity project, Employee mainEmployee, Set<Employee> employees){
         var dto = new GetProjectEmployeesDTO();
 

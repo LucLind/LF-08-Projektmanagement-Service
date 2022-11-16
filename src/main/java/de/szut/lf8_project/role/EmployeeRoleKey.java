@@ -8,6 +8,9 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+/**
+ * employee role key class
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

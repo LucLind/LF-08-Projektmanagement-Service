@@ -14,6 +14,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Project entity class
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter

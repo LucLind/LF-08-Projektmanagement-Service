@@ -7,6 +7,9 @@ import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
+/**
+ * DTO for employees for a qualification
+ */
 @Data
 public class EmployeesForAQualificationDTO {
     private String skill;

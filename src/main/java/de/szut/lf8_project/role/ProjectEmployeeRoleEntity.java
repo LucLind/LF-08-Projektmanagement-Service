@@ -6,6 +6,9 @@ import lombok.Data;
 
 import javax.persistence.*;
 
+/**
+ * project employee role entity
+ */
 @Entity
 @Data
 public class ProjectEmployeeRoleEntity {
