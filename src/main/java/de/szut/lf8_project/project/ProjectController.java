@@ -51,7 +51,7 @@ public class ProjectController {
      * @param dto
      * @return
      */
-    @Operation(summary = "erstellt ein neues Projekt mit Mitarbeiter")
+    @Operation(summary = "erstellt ein neues Projekt mit Mitarbeiter/in")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Projekt erstellt",
                     content = {@Content(mediaType = "application/json",
@@ -157,7 +157,6 @@ public class ProjectController {
     //endregion
 
     //region |========================= Put Employee by Skill =========================|
-
     /**
      * Puts an Employee by Skill
      * @param projectId the project id
@@ -166,6 +165,15 @@ public class ProjectController {
      * @param token the authorization token
      * @return Response entity OK if the employee was put by skill (OK)
      */
+    @Operation(summary = "fügt einem Projekt eine/n Mitarbeiter/in mit einer Rolle hinzu")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Mitarbeiter/in + Rolle hinzugefügt",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GetProjectDto.class))}),
+            @ApiResponse(responseCode = "404", description = "Projekt oder Mitarbeiter/in nicht gefunden",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "keine Berechtigung",
+                    content = @Content)})
     @PutMapping("/{projectId}/employee/{employeeId}/qualification/{skill}")
     public ResponseEntity<GetProjectDto> addEmployeeBySkill(@PathVariable Long projectId,
                                                             @PathVariable Long employeeId,
@@ -236,7 +244,7 @@ public class ProjectController {
      * @param projectId the project ID
      * @param employeeId the employee Id
      */
-    @Operation(summary = "Löscht einen Mitarbeiter anhand seiner ID aus einem Projekt")
+    @Operation(summary = "Löscht eine/n Mitarbeiter/in anhand der ID aus einem Projekt")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Erfolgreich gelöscht"),
             @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
@@ -269,7 +277,7 @@ public class ProjectController {
             }
         }
         if (EmployeetoBeFound == null){
-            throw new ResourceNotFoundException("Mitarbeiter mit nachfolgender ID nicht gefunden = " + employeeId);
+            throw new ResourceNotFoundException("Employee not found with Id: " + employeeId);
         }
         employees.remove(EmployeetoBeFound);
         entity.setInvolvedEmployees(employees);
@@ -281,13 +289,20 @@ public class ProjectController {
     //endregion
 
     //region |===================== Get Employees from Project =========================|
-
     /**
      * Gets the employees of a project
      * @param id the project id
      * @param token the authorization token
      * @return return response entity OK if the project was found and the employees were found
      */
+    @Operation(summary = "Gibt alle Mitarbeiter/innen eines Projekts zurück")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Erfolgreich geladen",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
+                    content = @Content)})
     @GetMapping("{id}/employee")
     public ResponseEntity<GetProjectEmployeesDTO> getEmployeesFromProject(@PathVariable Long id,
                                                                           @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
