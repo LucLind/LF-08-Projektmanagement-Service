@@ -30,6 +30,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * the project controller class
+ */
 @RequestMapping("project")
 @RestController
 public class ProjectController {
@@ -38,6 +41,9 @@ public class ProjectController {
     private final EmployeeService employeeService;
     private final ProjectEmployeeRoleService roleService;
 
+    /**
+     * the constructor
+     */
     public ProjectController(ProjectService service, ProjectMapper projectMapper, EmployeeService employeeService, ProjectEmployeeRoleService roleService) {
         this.service = service;
         this.projectMapper = projectMapper;
@@ -46,10 +52,12 @@ public class ProjectController {
     }
 
     //region |========================= Post Project =========================|
+
     /**
-     * Post Endpunkt für Projekte anlegen
-     * @param dto
-     * @return
+     * post endpoint fpr projects
+     * @param dto the AddProjectDto
+     * @param token the authorization token
+     * @return response entity CREATED if the project was created
      */
     @Operation(summary = "erstellt ein neues Projekt mit Mitarbeiter/in")
     @ApiResponses(value = {
@@ -103,9 +111,11 @@ public class ProjectController {
     //endregion
 
     //region |========================= Get All =========================|
+
     /**
-     * Get Endpunkt für alle Projekte
-     * @return
+     * Get endpoint for all projects
+     * @param token authorization token
+     * @return response entity OK if all project were found
      */
     @Operation(summary = "gibt eine Liste von Projekten wieder")
     @ApiResponses(value = {
@@ -130,10 +140,13 @@ public class ProjectController {
     //endregion
 
     // region |========================= Get by ID =========================|
+
     /**
-     * Get Endpunkt für ein Projekt
-     * @param id The id of the project
-     * @return Response eintity (OK) or null, if the project is not found bi ID
+     * get endpoint for a project
+     *
+     * @param id the project id
+     * @param token the authorization header
+     * @return respons entity (OK) if the project was foung
      */
     @Operation(summary = "finde Projekt anhand ID")
     @ApiResponses(value = {

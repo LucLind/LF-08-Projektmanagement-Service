@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.Set;
 
+/**
+ * GetProjectEmployeesDTO class
+ */
 @Data
 public class GetProjectEmployeesDTO {
     private Long projectId;

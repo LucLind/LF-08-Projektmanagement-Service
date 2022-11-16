@@ -8,6 +8,9 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * PutProjectDTO class
+ */
 @Data
 public class PutProjectDTO {
     @NotBlank(message = "Description is mandatory")

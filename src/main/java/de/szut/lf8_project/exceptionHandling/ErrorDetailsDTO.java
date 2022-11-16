@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * DTO class for error details
+ */
 @Data
 @AllArgsConstructor
 public class ErrorDetailsDTO {

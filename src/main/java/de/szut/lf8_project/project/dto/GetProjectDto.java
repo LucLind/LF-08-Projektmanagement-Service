@@ -7,6 +7,9 @@ import lombok.Data;
 import java.util.Date;
 import java.util.Set;
 
+/**
+ * GetProjectDto class
+ */
 @Data
 public class GetProjectDto {
     private Long id;

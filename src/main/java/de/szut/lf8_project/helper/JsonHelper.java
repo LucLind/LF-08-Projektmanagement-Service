@@ -9,8 +9,20 @@ import java.net.HttpURLConnection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * json helper class
+ * @param <T>
+ */
 public class JsonHelper<T> {
 
+    /**
+     * gets the Dto from connection
+     * @param c
+     * @param connection the httpcurl connection
+     * @retur
+     * @param <T>
+     * @throws Exception
+     */
 
     public static <T> T getDTOFromConnection(Class<T> c, HttpURLConnection connection) throws Exception{
 
