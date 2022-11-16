@@ -210,7 +210,7 @@ public class ProjectController {
         }
 
         if (!employeeService.employeeIsFree(employee, project)){
-            throw new EmployeeNotFreeException("Employee is has no time for the requested project");
+            throw new EmployeeNotFreeException("Employee has no time for the requested project");
         }
 
         if (employeeService.employeeIsFree(employee, project)){
@@ -365,7 +365,42 @@ public class ProjectController {
     }
     //endregion
 
+    //region |========================= Put Main Employee by Skill =========================|
+    @PutMapping("/{projectId}/mainEmployee/{employeeId}/qualification/{skill}")
+    public ResponseEntity<GetProjectDto> addMainEmployeeBySkill(@PathVariable Long projectId,
+                                                                @PathVariable Long employeeId,
+                                                                @PathVariable String skill,
+                                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+        ProjectEntity project = service.readById(projectId);
+        Employee employee = employeeService.readById(employeeId, token);
 
+        if (project == null && employee == null){
+            throw new ResourceNotFoundException("No project with ID: " + projectId +  "/n/rNo employee with ID: " + employeeId);
+        }
+        else if( project == null){
+            throw new ResourceNotFoundException("No project with ID: " + projectId);
+        }
+        else if( employee == null){
+            throw new ResourceNotFoundException("No employee with ID: " + employeeId);
+        }
+
+        if (!employee.getSkillSet().contains(skill)){
+            throw new EmployeeWrongSkillException("The requested employee lacks the desired skill: " + skill);
+        }
+
+        if (!employeeService.employeeIsFree(employee, project)){
+            throw new EmployeeNotFreeException("Employee is has no time for the requested project");
+        }
+
+        if (employeeService.employeeIsFree(employee, project)){
+            project.setMainEmployee(employee.getEntity());
+            project.setMainEmployeeQualification(skill);
+        }
+
+        var dto = ProjectMapper.MapProjectToGetProjectDto(project);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+    //endregion
     /**
      * Helper method for getting an employee object out of the employee entity.
      * @param project the Project

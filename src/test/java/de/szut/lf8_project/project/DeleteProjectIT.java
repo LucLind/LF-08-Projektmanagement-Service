@@ -1,5 +1,8 @@
 package de.szut.lf8_project.project;
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 import de.szut.lf8_project.employee.EmployeeEntity;
 import de.szut.lf8_project.testcontainers.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -45,7 +48,11 @@ public class DeleteProjectIT extends AbstractIntegrationTest {
                 .andExpect(status().isUnauthorized());
     }
 
+<<<<<<< Updated upstream
     
+=======
+
+>>>>>>> Stashed changes
     @Test
     @WithMockUser(roles = "user")
     void deleteProject() throws Exception{
@@ -76,6 +83,13 @@ public class DeleteProjectIT extends AbstractIntegrationTest {
 
         final var contentAsString = this.mockMvc.perform(delete("/project/1")
                         .header("Authorization", bearerToken))
+<<<<<<< Updated upstream
                 .andExpect(status().is2xxSuccessful());
     }
 }
+=======
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isNotFound());
+    }
+}
+>>>>>>> Stashed changes
