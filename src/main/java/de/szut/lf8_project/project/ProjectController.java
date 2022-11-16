@@ -367,6 +367,24 @@ public class ProjectController {
     //endregion
 
     //region |========================= Put Main Employee by Skill =========================|
+
+    /**
+     * Update the main amployee by his or her skill
+     * @param projectId the project id
+     * @param employeeId the employee id
+     * @param skill the qualification
+     * @param token the authorization token
+     * @return response entity OK if the main employee is updated
+     */
+    @Operation(summary = "Einsetzen des Hauptverantwortlichen anhand seiner Qualifikation")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Hauptverantwortlicher erfolgreich geupdated",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GetProjectDto.class))}),
+            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Hauptverantwortlicher nicht gefunden",
+                    content = @Content)})
     @PutMapping("/{projectId}/mainEmployee/{employeeId}/qualification/{skill}")
     public ResponseEntity<GetProjectDto> addMainEmployeeBySkill(@PathVariable Long projectId,
                                                                 @PathVariable Long employeeId,
