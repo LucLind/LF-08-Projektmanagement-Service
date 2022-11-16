@@ -3,6 +3,7 @@ package de.szut.lf8_project.project;
 import de.szut.lf8_project.employee.EmployeeEntity;
 import de.szut.lf8_project.testcontainers.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Date;
@@ -43,7 +44,7 @@ public class PutProjectIT extends AbstractIntegrationTest {
                 }
                 """;
 
-        final var contentAsString = this.mockMvc.perform(put("/project/1")
+        final var contentAsString = this.mockMvc.perform(put("/project/1").content(content).contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", bearerToken))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("description", is("Eine neue Beschreibung")));
