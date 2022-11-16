@@ -11,9 +11,17 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Employee mapper class.
+ */
 @Service
 public class EmployeeMapper {
 
+    /**
+     * forms a employee entity out of the employee dto
+     * @param dto the employee response dto
+     * @return the employee entity
+     */
     public static EmployeeEntity GetEmployeeDtoToEmployeeEntity(EmployeeResponseDTO dto){
         var entity = new EmployeeEntity();
         entity.setId(dto.getId());
@@ -21,29 +29,39 @@ public class EmployeeMapper {
         return entity;
     }
 
-    public static Employee EmployeeResponseDTOToEmployeeManagementEntity(EmployeeResponseDTO dto) {
-        var entity = new Employee();
-        entity.setId(dto.getId());
-        entity.setLastName(dto.getLastName());
-        entity.setFirstName(dto.getFirstName());
-        entity.setStreet(dto.getStreet());
-        entity.setPostcode(dto.getPostcode());
-        entity.setCity(dto.getCity());
-        entity.setPhone(dto.getPhone());
-        entity.setSkillSet(dto.getSkillSet());
+    /**
+     * Method to get an employee out of the employee response dto
+     * @param dto the employee dto
+     * @return the employee
+     */
+    public static Employee EmployeeResponseDTOToEmployee(EmployeeResponseDTO dto) {
+        var employee = new Employee();
+        employee.setId(dto.getId());
+        employee.setLastName(dto.getLastName());
+        employee.setFirstName(dto.getFirstName());
+        employee.setStreet(dto.getStreet());
+        employee.setPostcode(dto.getPostcode());
+        employee.setCity(dto.getCity());
+        employee.setPhone(dto.getPhone());
+        employee.setSkillSet(dto.getSkillSet());
 
-        return entity;
+        return employee;
     }
 
-    public static EmployeeNameAndSkillDataDTO EmployeeEntityToNameAndSkillDataDTO(Employee entity){
-        if (entity == null) return null;
+    /**
+     * Forms a dto out of an employee
+     * @param employee the employee
+     * @return EmployeeNameAndSkillDataDTO
+     */
+    public static EmployeeNameAndSkillDataDTO EmployeeEntityToNameAndSkillDataDTO(Employee employee){
+        if (employee == null) return null;
 
         var dto = new EmployeeNameAndSkillDataDTO();
-        dto.setId(entity.getId());
-        dto.setLastName(entity.getLastName());
-        dto.setFirstName(entity.getFirstName());
+        dto.setId(employee.getId());
+        dto.setLastName(employee.getLastName());
+        dto.setFirstName(employee.getFirstName());
 
-        dto.setSkillSet(entity.getSkillSet()
+        dto.setSkillSet(employee.getSkillSet()
                 .stream()
                 .map(s -> new QualificationDto(s))
                 .collect(Collectors.toSet()));
@@ -51,6 +69,11 @@ public class EmployeeMapper {
         return dto;
     }
 
+    /**
+     * Forms Employees out of employeesForAQualificationDTO
+     * @param dto the employeesForAQualificationDTO
+     * @return the employees
+     */
     public static Set<Employee> employeesForAQualificationDTOToEmployee(EmployeesForAQualificationDTO dto){
         Set<Employee> employees = new HashSet<>();
 
@@ -65,14 +88,4 @@ public class EmployeeMapper {
 
         return employees;
     }
-
-    public EmployeesForAQualificationDTO mapToGetDto(EmployeeEntity entity) {
-        //return new EmployeesForAQualificationDto(entity.getId(), entity.getSkillSet());
-        return null;
-    }
-    public EmployeeRequestDTO mapToGetEmployeeDto(EmployeeEntity entity) {
-        return new EmployeeRequestDTO();
-    }
-
-
 }

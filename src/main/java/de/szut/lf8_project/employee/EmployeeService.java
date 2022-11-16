@@ -25,6 +25,12 @@ public class EmployeeService {
         this.repository = repository;
     }
 
+    /**
+     * reads all employees out of the service.
+     * DEPRECATED and no longer in use!!!
+     * @param token the authorization token
+     * @return set of employees
+     */
     public Set<Employee> readAll(String token){
         EmployeeResponseDTO[] externalDto;
         Set<Employee> employee;
@@ -42,7 +48,7 @@ public class EmployeeService {
             }
 
             employee = Arrays.stream(externalDto)
-                    .map(d -> EmployeeMapper.EmployeeResponseDTOToEmployeeManagementEntity(d))
+                    .map(d -> EmployeeMapper.EmployeeResponseDTOToEmployee(d))
                     .collect(Collectors.toSet());
         } catch (Exception e)
         {
@@ -52,16 +58,12 @@ public class EmployeeService {
         return employee.stream().map(e -> getEmployeeEntity(e)).collect(Collectors.toSet());
     }
 
-    public List<EmployeeEntity> readByProjectId(Long projectId){
-        // TODO
-        return null;
-    }
-
 
     /**
-     * Liest aus aud der Datenbank und valdiert mit Mitarbeiter dienst
-     * @param employeeIds Die IDs der Mitarbeiter
-     * @return Mitarbeiter mit gewählten IDs
+     * reads employees from the database and validates with employee service
+     * @param employeeIds the ids of the employees
+     * @param token the authorization token
+     * @return employees with its ids
      */
     public Set<Employee> readById(Set<Long> employeeIds, String token) {
 
@@ -75,8 +77,9 @@ public class EmployeeService {
     }
 
     /**
-     * Liest aus aud der datenbank und valdiert mit mitarbeiter dienst
-     * @param id
+     * reads employee from the database and validates with employee service
+     * @param id employee id
+     * @param token the authorization token
      * @return
      */
     public Employee readById(Long id, String token) {
@@ -95,7 +98,7 @@ public class EmployeeService {
                 throw new ResourceNotFoundException("Could not find employee with Id: " + id);
             }
 
-            employee = EmployeeMapper.EmployeeResponseDTOToEmployeeManagementEntity(externalDto);
+            employee = EmployeeMapper.EmployeeResponseDTOToEmployee(externalDto);
         } catch (Exception e)
         {
             throw new RuntimeException(e);
@@ -104,6 +107,13 @@ public class EmployeeService {
         return getEmployeeEntity(employee);
     }
 
+    /**
+     * reads employees by their qualifications
+     * DEPRECATED and no longer in use!!!
+     * @param skill the qualification
+     * @param token the authorization token
+     * @return set of employees
+     */
     public Set<Employee> readBySkill(String skill, String token) {
         EmployeesForAQualificationDTO externalDto;
         Set<Employee> employees;
@@ -130,22 +140,22 @@ public class EmployeeService {
         return employees.stream().map(e -> getEmployeeEntity(e)).collect(Collectors.toSet());
     }
 
+    /**
+     * updates the employee entity
+     * DEPRECATED and no longer in use!!!
+     * @param entity the employee entity
+     * @return updated employee entity
+     */
     public EmployeeEntity update(EmployeeEntity entity){
         return repository.save(entity);
     }
 
-    public boolean employeeIsValid(Long id){
-        // TODO check if the employee is valid
-        return false;
-    }
-
-
-    public boolean employeeHasSkill(Long id,String skill){
-        // TODO check if the employee has the qualification
-        return true;
-    }
-
-
+    /**
+     * checks wether the employee is free or not int the project time.
+     * @param employee the employee
+     * @param dto the AddProjectDto
+     * @return true, if free, false if busy
+     */
     public boolean employeeIsFree(Employee employee, AddProjectDto dto){
         if (employee.getEntity().getMainProject() == null || employee.getEntity().getMainProject().isEmpty()){
             return true;
@@ -169,6 +179,12 @@ public class EmployeeService {
         return true;
     }
 
+    /**
+     * checks wether the employee is free or not int the project time.
+     * @param employee the employee
+     * @param requestedProject the project
+     * @return true, if free, false if busy
+     */
     public boolean employeeIsFree(Employee employee, ProjectEntity requestedProject){
         if (employee.getEntity().getMainProject() == null || employee.getEntity().getMainProject().isEmpty()){
             return true;
@@ -192,6 +208,11 @@ public class EmployeeService {
         return true;
     }
 
+    /**
+     * Getter for the employee entity
+     * @param employee the employee
+     * @return the employee
+     */
     private Employee getEmployeeEntity(Employee employee){
         Optional<EmployeeEntity> optional = repository.findById(employee.getId());
         EmployeeEntity employeeProjectEntity;

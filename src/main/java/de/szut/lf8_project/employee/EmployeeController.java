@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Employee Controller
+ */
 @RequestMapping("employee")
 @RestController
 public class EmployeeController {
@@ -31,12 +34,24 @@ public class EmployeeController {
     private final EmployeeMapper employeeMapper;
     private final ProjectService projectService;
 
+    /**
+     * constructor
+     * @param service the employee service
+     * @param projectService the project service
+     * @param employeeMapper the employee mapper
+     */
     public EmployeeController(EmployeeService service, ProjectService projectService, EmployeeMapper employeeMapper){
         this.service = service;
         this.projectService = projectService;
         this.employeeMapper = employeeMapper;
     }
 
+    /**
+     * Method for getting projects of an employee
+     * @param id employee id
+     * @param token authorization token
+     * @return response entity OK if the employee (and its projects) is(were) found
+     */
     @GetMapping("{id}/project")
     public ResponseEntity<Set<GetProjectDto>> getEmployeeProjects(@PathVariable Long id,
                                                                   @RequestHeader(HttpHeaders.AUTHORIZATION) String token){

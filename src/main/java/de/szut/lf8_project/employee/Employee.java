@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.util.Set;
 
+/**
+ * Employee class
+ */
 @Data
 public class Employee {
 
