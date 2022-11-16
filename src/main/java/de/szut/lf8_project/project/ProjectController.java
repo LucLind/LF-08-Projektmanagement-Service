@@ -10,6 +10,7 @@ import de.szut.lf8_project.exceptionHandling.ResourceNotFoundException;
 import de.szut.lf8_project.project.dto.AddProjectDto;
 import de.szut.lf8_project.project.dto.GetProjectDto;
 import de.szut.lf8_project.project.dto.GetProjectEmployeesDTO;
+import de.szut.lf8_project.project.dto.PutProjectDTO;
 import de.szut.lf8_project.role.EmployeeRoleKey;
 import de.szut.lf8_project.role.ProjectEmployeeRoleEntity;
 import de.szut.lf8_project.role.ProjectEmployeeRoleService;
@@ -93,7 +94,7 @@ public class ProjectController {
         // Projekt Entity auf der Datenbank speichern.
 
 
-        service.save(project);
+        project = service.save(project);
 
         // Response erzeugt und zurückgegeben.
         var response = ProjectMapper.MapProjectToGetProjectDto(project);
@@ -286,47 +287,64 @@ public class ProjectController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     //endregion
+
+    //region |========================= Put Project =========================|
     /**
      * Update Endpunkt für ein Projekt
      * //@param id
      * //@param dto
      */
-//    @Operation(summary = "Update eines Projekts")
-//    @ApiResponses(value = {
-//            @ApiResponse(responseCode = "200", description = "Projekt erfolgreich geupdated",
-//                    content = {@Content(mediaType = "application/json",
-//                            schema = @Schema(implementation = GetProjectDto.class))}),
-//            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
-//                    content = @Content),
-//            @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
-//                    content = @Content)})
-//    @PutMapping("/{id}")
-//    public ResponseEntity<GetProjectDto> updateProject(@PathVariable Long id,
-//                                                       @RequestBody AddProjectDto dto,
-//                                                       EmployeeMangementEntity mainEmployee,
-//                                                       Set<EmployeeMangementEntity> employees) {
-//        var entity = this.projectMapper.MapAddProjectDtoToProject(dto, mainEmployee, employees);
-//        entity.setId(id);
-//        entity = this.service.update(entity);
-//        return null;//ResponseEntity.ok(this.projectMapper.MapProjectToGetProjectDto(entity));
-//    }
-
-
-        private Employee getMainEmployee(ProjectEntity project, String token){
-            if (project.getMainEmployee() == null){
-                return null;
-            }
-
-            return employeeService.readById(project.getMainEmployee().getId(), token);
+    @Operation(summary = "Update eines Projekts")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Projekt erfolgreich geupdated",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GetProjectDto.class))}),
+            @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
+                    content = @Content)})
+    @PutMapping("/{id}")
+    public ResponseEntity<GetProjectDto> updateProject(@PathVariable Long id,
+                                                       @RequestBody PutProjectDTO dto,
+                                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        var oldEntity = service.readById(id);
+        if (oldEntity == null){
+            throw new ResourceNotFoundException("No project found with ID: " + id);
         }
-
-        private Set<Employee> getEmployees(ProjectEntity project, String token){
-            if (project.getInvolvedEmployees() == null ||
-            project.getInvolvedEmployees().isEmpty()){
-                return new HashSet<>();
-            }
-
-            var ids = project.getInvolvedEmployees().stream().map(e -> e.getEmployee().getId()).collect(Collectors.toSet());
-            return employeeService.readById(ids, token);
-        }
+        var entity = this.projectMapper.mapAddProjectDtoToExistingProject(dto, oldEntity);
+        entity = this.service.save(entity);
+        var response = ProjectMapper.MapProjectToGetProjectDto(entity);
+        return new ResponseEntity(response, HttpStatus.OK);
     }
+
+
+    /**
+     * Helper methode um aus der employee entity im projekt ein komplettes Employee object zu erhalten.
+     * @param project
+     * @param token
+     * @return
+     */
+    private Employee getMainEmployee(ProjectEntity project, String token){
+        if (project.getMainEmployee() == null){
+            return null;
+        }
+
+        return employeeService.readById(project.getMainEmployee().getId(), token);
+    }
+
+    /**
+     * Helper MEthode um aus den involvierten Mitarbeitern im Projekt die kompletten Employee Objekte zu erhalten.
+     * @param project
+     * @param token
+     * @return
+     */
+    private Set<Employee> getEmployees(ProjectEntity project, String token){
+        if (project.getInvolvedEmployees() == null ||
+        project.getInvolvedEmployees().isEmpty()){
+            return new HashSet<>();
+        }
+
+        var ids = project.getInvolvedEmployees().stream().map(e -> e.getEmployee().getId()).collect(Collectors.toSet());
+        return employeeService.readById(ids, token);
+    }
+}
