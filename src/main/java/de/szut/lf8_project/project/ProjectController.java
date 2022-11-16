@@ -311,7 +311,8 @@ public class ProjectController {
     @Operation(summary = "Gibt alle Mitarbeiter/innen eines Projekts zurück")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Erfolgreich geladen",
-                    content = @Content),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GetProjectEmployeesDTO.class))}),
             @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
