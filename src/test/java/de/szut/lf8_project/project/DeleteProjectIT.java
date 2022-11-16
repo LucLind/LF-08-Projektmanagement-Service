@@ -1,5 +1,4 @@
 package de.szut.lf8_project.project;
-
 import de.szut.lf8_project.employee.EmployeeEntity;
 import de.szut.lf8_project.testcontainers.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
@@ -45,7 +44,6 @@ public class DeleteProjectIT extends AbstractIntegrationTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    
     @Test
     @WithMockUser(roles = "user")
     void deleteProject() throws Exception{
@@ -76,6 +74,9 @@ public class DeleteProjectIT extends AbstractIntegrationTest {
 
         final var contentAsString = this.mockMvc.perform(delete("/project/1")
                         .header("Authorization", bearerToken))
-                .andExpect(status().is2xxSuccessful());
+
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(status().isNotFound());
     }
 }
+
