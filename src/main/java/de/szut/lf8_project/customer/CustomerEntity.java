@@ -9,6 +9,9 @@ import lombok.Setter;
 import javax.persistence.*;
 import java.util.Set;
 
+/**
+ * Customer Entity class
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

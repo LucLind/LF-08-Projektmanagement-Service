@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.Set;
 
+/**
+ * The Employee name and skill data DTO class.
+ */
 @Data
 public class EmployeeNameAndSkillDataDTO {
     private Long id;

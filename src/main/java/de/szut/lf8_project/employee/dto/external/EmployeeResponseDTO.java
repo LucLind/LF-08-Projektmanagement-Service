@@ -4,6 +4,9 @@ import lombok.Data;
 
 import java.util.Set;
 
+/**
+ * Employee response DTO class.
+ */
 @Data
 public class EmployeeResponseDTO {
     private Long id;

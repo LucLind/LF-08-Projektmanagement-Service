@@ -6,6 +6,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.Set;
 
+/**
+ * Employee request DTO class.
+ */
 @Data
 public class EmployeeRequestDTO
 {

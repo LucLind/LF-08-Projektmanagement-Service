@@ -5,6 +5,9 @@ import lombok.Data;
 
 import java.util.Set;
 
+/**
+ * Get employee DTO class.
+ */
 @Data
 public class GetEmployeeDTO {
     private EmployeeResponseDTO employee;
