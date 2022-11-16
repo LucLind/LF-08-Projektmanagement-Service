@@ -132,8 +132,8 @@ public class ProjectController {
     // region |========================= Get by ID =========================|
     /**
      * Get Endpunkt für ein Projekt
-     * @param id
-     * @return
+     * @param id The id of the project
+     * @return Response eintity (OK) or null, if the project is not found bi ID
      */
     @Operation(summary = "finde Projekt anhand ID")
     @ApiResponses(value = {
@@ -157,6 +157,15 @@ public class ProjectController {
     //endregion
 
     //region |========================= Put Employee by Skill =========================|
+
+    /**
+     * Puts an Employee by Skill
+     * @param projectId the project id
+     * @param employeeId the employee ID
+     * @param skill the qualifikation
+     * @param token the authorization token
+     * @return Response entity OK if the employee was put by skill (OK)
+     */
     @PutMapping("/{projectId}/employee/{employeeId}/qualification/{skill}")
     public ResponseEntity<GetProjectDto> addEmployeeBySkill(@PathVariable Long projectId,
                                                             @PathVariable Long employeeId,
@@ -199,8 +208,8 @@ public class ProjectController {
 
     //region |========================= Delete Project =========================|
     /**
-     * Delete Endpunkt für ein Projekt
-     * @param id
+     * Deletes a Project by its id
+     * @param id the project id
      */
     @Operation(summary = "Löscht ein Projekt anhand seiner ID")
     @ApiResponses(value = {
@@ -223,9 +232,9 @@ public class ProjectController {
 
     //region |========================= Remove Employee =========================|
     /**
-     * Löscht einen Mitarbeiter aus einem Projekt und das Projekt aus dem MA
-     * @param projectId die Projekt-Id
-     * @param employeeId die MA-Id
+     * deletes an employee out of a project and the project out of the employee
+     * @param projectId the project ID
+     * @param employeeId the employee Id
      */
     @Operation(summary = "Löscht einen Mitarbeiter anhand seiner ID aus einem Projekt")
     @ApiResponses(value = {
@@ -272,6 +281,13 @@ public class ProjectController {
     //endregion
 
     //region |===================== Get Employees from Project =========================|
+
+    /**
+     * Gets the employees of a project
+     * @param id the project id
+     * @param token the authorization token
+     * @return return response entity OK if the project was found and the employees were found
+     */
     @GetMapping("{id}/employee")
     public ResponseEntity<GetProjectEmployeesDTO> getEmployeesFromProject(@PathVariable Long id,
                                                                           @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
@@ -289,10 +305,13 @@ public class ProjectController {
     //endregion
 
     //region |========================= Put Project =========================|
+
     /**
-     * Update Endpunkt für ein Projekt
-     * //@param id
-     * //@param dto
+     * Updates a project
+     * @param id the project id
+     * @param dto the PutProjectDto
+     * @param token the authorization token
+     * @return Response Entity OK if the project was found and is updated
      */
     @Operation(summary = "Update eines Projekts")
     @ApiResponses(value = {
@@ -320,10 +339,10 @@ public class ProjectController {
 
 
     /**
-     * Helper methode um aus der employee entity im projekt ein komplettes Employee object zu erhalten.
-     * @param project
-     * @param token
-     * @return
+     * Helper method for getting an employee object out of the employee entity.
+     * @param project the Project
+     * @param token the authorization token
+     * @return the employee object
      */
     private Employee getMainEmployee(ProjectEntity project, String token){
         if (project.getMainEmployee() == null){
@@ -334,10 +353,10 @@ public class ProjectController {
     }
 
     /**
-     * Helper MEthode um aus den involvierten Mitarbeitern im Projekt die kompletten Employee Objekte zu erhalten.
-     * @param project
-     * @param token
-     * @return
+     * Helper method for getting an employee objects out of the involved employee entities.
+     * @param project the project
+     * @param token the authorization token
+     * @return the employee objects
      */
     private Set<Employee> getEmployees(ProjectEntity project, String token){
         if (project.getInvolvedEmployees() == null ||
