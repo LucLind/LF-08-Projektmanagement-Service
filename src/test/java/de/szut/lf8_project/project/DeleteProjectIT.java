@@ -75,8 +75,7 @@ public class DeleteProjectIT extends AbstractIntegrationTest {
         final var contentAsString = this.mockMvc.perform(delete("/project/1")
                         .header("Authorization", bearerToken))
 
-                .andExpect(status().is2xxSuccessful())
-                .andExpect(status().isNotFound());
+                .andExpect(status().is2xxSuccessful());
     }
 }
 
