@@ -3,6 +3,7 @@ package de.szut.lf8_project.project;
 import de.szut.lf8_project.customer.CustomerEntity;
 import de.szut.lf8_project.employee.EmployeeEntity;
 import de.szut.lf8_project.employee.Employee;
+import de.szut.lf8_project.role.ProjectEmployeeRoleEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,14 +32,10 @@ public class ProjectEntity {
 
     @ManyToOne
     private EmployeeEntity mainEmployee;
+    private String mainEmployeeQualification;
 
-    @ManyToMany(cascade = CascadeType.MERGE)
-    @JoinTable(
-            name = "project_invovled_employees",
-            joinColumns = @JoinColumn(name = "project_id"),
-            inverseJoinColumns = @JoinColumn(name = "employee_id")
-    )
-    private Set<EmployeeEntity> involvedEmployees;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private Set<ProjectEmployeeRoleEntity> involvedEmployees;
     @ManyToOne
     private CustomerEntity customer;
     private String comment;

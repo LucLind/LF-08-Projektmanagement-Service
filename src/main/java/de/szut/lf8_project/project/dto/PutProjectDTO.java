@@ -9,13 +9,9 @@ import java.util.Date;
 import java.util.Set;
 
 @Data
-public class AddProjectDto {
+public class PutProjectDTO {
     @NotBlank(message = "Description is mandatory")
     private String description;
-
-    private EmployeeRoleDTO mainEmployee;
-
-    private Set<EmployeeRoleDTO> employees;
 
     @NotBlank(message = "Comment is mandatory")
     private String comment;

@@ -15,7 +15,7 @@ public class GetProjectDto {
     private Date startDate;
     private Date estimatedEndDate;
     private Date finalEndDate;
-    private EmployeeNameAndSkillDataDTO mainEmployee;
-    private Set<EmployeeNameAndSkillDataDTO> employees;
+    private Long mainEmployee;
+    private Set<Long> employees;
     private Long customer;
 }
