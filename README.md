@@ -63,6 +63,10 @@ docker compose up
 ---
 # LF-08-Projektmanagement-Service
 
+## Testing
+Damit die Integrationstests funktionieren können, muss in der klasse: AbstractIntegrationTest
+der aktuelle Token vom Mitarbeiterdienst eingefügt werden.
+
 [Jira](https://lucas26.atlassian.net/jira/software/projects/LF08PS/boards/2)
 
 ![Projektmanagement](Projectmanagement.jpg)
