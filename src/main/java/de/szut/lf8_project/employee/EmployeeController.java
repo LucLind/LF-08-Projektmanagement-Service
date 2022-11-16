@@ -36,7 +36,13 @@ public class EmployeeController {
         this.projectService = projectService;
         this.employeeMapper = employeeMapper;
     }
-
+    @Operation(summary = "Alle Projekte eine/s/r Mitarbeiter/s/in auslesen")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Projekte erfolgreich ausgelesen",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = GetProjectDto.class)) }),
+            @ApiResponse(responseCode = "404", description = "Projekte nicht gefunden",
+                    content = @Content) })
     @GetMapping("{id}/project")
     public ResponseEntity<Set<GetProjectDto>> getEmployeeProjects(@PathVariable Long id,
                                                                   @RequestHeader(HttpHeaders.AUTHORIZATION) String token){
