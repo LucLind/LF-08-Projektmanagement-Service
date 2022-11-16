@@ -11,6 +11,9 @@ import javax.persistence.*;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Emloyee entity class
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -30,6 +33,10 @@ public class EmployeeEntity {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private Set<ProjectEmployeeRoleEntity> involvedProjects;
 
+    /**
+     * constructor
+     * @param e the employee
+     */
     public EmployeeEntity(Employee e){
         this.id = e.getId();
         e.setEntity(this);
