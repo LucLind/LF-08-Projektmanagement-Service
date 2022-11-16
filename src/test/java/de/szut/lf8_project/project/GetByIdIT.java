@@ -54,13 +54,7 @@ public class GetByIdIT extends AbstractIntegrationTest {
         final var contentAsString = this.mockMvc.perform(get("/project/2")
                         .header("Authorization", bearerToken))
                 .andExpect(status().is2xxSuccessful())
-<<<<<<< Updated upstream
-                .andExpect(jsonPath("description", is("Eine zweite Beschreibung")));
-    }
-}
-=======
-                .andExpect(jsonPath("description", is("Eine zweite Beschreibung")))
                 .andExpect(jsonPath("comment", is("Ein zweiter Kommentar")));
     }
 }
->>>>>>> Stashed changes
+
