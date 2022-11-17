@@ -11,6 +11,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Test class for getting projects from an employee
+ */
 public class GetProjectsFromEmployeeIT extends AbstractIntegrationTest {
     @Test
     void authorization() throws Exception {
@@ -18,6 +21,10 @@ public class GetProjectsFromEmployeeIT extends AbstractIntegrationTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    /**
+     * puts an employee
+     * @throws Exception exception
+     */
     @Test
     @WithMockUser(roles = "user")
     void putEmployee() throws Exception {

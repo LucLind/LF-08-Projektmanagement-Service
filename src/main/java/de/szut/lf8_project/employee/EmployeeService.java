@@ -15,12 +15,19 @@ import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Employee service class
+ */
 @Service
 public class EmployeeService {
     private static final String EMPLOYEE_SERVICE_URL = "https://employee.szut.dev/employees";
     private static final String QUALIFICATION_SERVICE_URL = "https://employee.szut.dev/qualifications";
     private final EmployeeRepository repository;
 
+    /**
+     * constructor
+     * @param repository employee repository
+     */
     public EmployeeService(EmployeeRepository repository){
         this.repository = repository;
     }

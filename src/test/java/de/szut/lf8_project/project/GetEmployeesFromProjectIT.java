@@ -10,6 +10,9 @@ import java.util.Date;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Get employees from project class
+ */
 public class GetEmployeesFromProjectIT extends AbstractIntegrationTest {
     @Test
     void authorization() throws Exception {

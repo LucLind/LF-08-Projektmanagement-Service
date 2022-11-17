@@ -1,0 +1,16 @@
+de.szut.lf8_project
+de.szut.lf8_project.config
+de.szut.lf8_project.customer
+de.szut.lf8_project.customer.dto
+de.szut.lf8_project.employee
+de.szut.lf8_project.employee.dto.external
+de.szut.lf8_project.employee.dto.internal
+de.szut.lf8_project.exceptionHandling
+de.szut.lf8_project.hello
+de.szut.lf8_project.hello.dto
+de.szut.lf8_project.helper
+de.szut.lf8_project.project
+de.szut.lf8_project.project.dto
+de.szut.lf8_project.qualification.dto
+de.szut.lf8_project.role
+de.szut.lf8_project.testcontainers

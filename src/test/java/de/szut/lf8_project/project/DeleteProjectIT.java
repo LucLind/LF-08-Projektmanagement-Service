@@ -13,7 +13,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Delete Project test class
+ */
 public class DeleteProjectIT extends AbstractIntegrationTest {
+    /**
+     * authorization method
+     * @throws Exception exception thrown if author. fails
+     */
     @Test
     void authorization() throws Exception {
         final String content = """
@@ -40,10 +47,15 @@ public class DeleteProjectIT extends AbstractIntegrationTest {
                 }
                 """;
 
+
         final var contentAsString = this.mockMvc.perform(post("/project/").content(content).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());
     }
 
+    /**
+     * delete project test
+     * @throws Exception exception
+     */
     @Test
     @WithMockUser(roles = "user")
     void deleteProject() throws Exception{

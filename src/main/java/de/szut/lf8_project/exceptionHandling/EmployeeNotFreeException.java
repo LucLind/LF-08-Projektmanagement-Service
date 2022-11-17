@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class EmployeeNotFreeException extends RuntimeException {
+    /**
+     * constructor
+     * @param message message
+     */
     public EmployeeNotFreeException(String message) {
         super(message);
     }

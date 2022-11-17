@@ -11,7 +11,7 @@ import java.util.Set;
 
 /**
  * json helper class
- * @param <T>
+ * @param <T> <T>
  */
 public class JsonHelper<T> {
 

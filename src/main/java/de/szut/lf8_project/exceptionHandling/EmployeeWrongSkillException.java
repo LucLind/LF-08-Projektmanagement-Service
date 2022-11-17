@@ -8,5 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class EmployeeWrongSkillException extends RuntimeException{
+    /**
+     * constructor
+     * @param message message
+     */
     public EmployeeWrongSkillException(String message){super(message);}
 }
