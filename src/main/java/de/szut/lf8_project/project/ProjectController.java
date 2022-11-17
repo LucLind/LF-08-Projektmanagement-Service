@@ -92,7 +92,7 @@ public class ProjectController {
             var employeeIds = dto.getEmployees().stream().map(EmployeeRoleDTO::getEmployeeId).collect(Collectors.toSet());
             employees = employeeService.readById(employeeIds, token);
             if (employees.isEmpty()){
-                return null;
+                throw new EmployeeNotFreeException("No Employees were found.");
             }
         }
 
