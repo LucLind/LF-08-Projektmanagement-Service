@@ -262,7 +262,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "204", description = "Erfolgreich gelöscht"),
             @ApiResponse(responseCode = "401", description = "Zugriff verweigert",
                     content = @Content),
-            @ApiResponse(responseCode = "404", description = "Projekt nicht gefunden",
+            @ApiResponse(responseCode = "404", description = "Projekt oder Mitarbeiter nicht gefunden",
                     content = @Content)})
     @DeleteMapping("/{projectId}/employee/{employeeId}")
     public ResponseEntity deleteEmployeeFromProjectById(@PathVariable Long projectId, @PathVariable Long employeeId) {
@@ -290,7 +290,7 @@ public class ProjectController {
             }
         }
         if (EmployeetoBeFound == null){
-            throw new ResourceNotFoundException("Employee not found with Id: " + employeeId);
+            throw new ResourceNotFoundException("Employee with Id: " + employeeId + " , not found in Project.");
         }
         employees.remove(EmployeetoBeFound);
         entity.setInvolvedEmployees(employees);
